@@ -22,7 +22,7 @@ Alvo: 390 × 844 pt (iPhone 14/15), tema escuro fixo, pt-BR.
 | Design (tokens, componentes, 9 telas, HTML de referência) | ✅ completo |
 | Especificação funcional (`promp-app.md`) | ✅ validada em 10/11/2026 |
 | Código do app | ⬜ não iniciado |
-| Assets `.webp` dos exercícios | 🟡 8 de 31 (Pull completo, 1 do Upper) |
+| Assets `.webp` dos exercícios | 🟡 8 de 31 (Pull completo, 1 do Upper), recodificados (1,9 MB) |
 
 ---
 
@@ -83,7 +83,8 @@ design/                   pacote de handoff (fonte da verdade visual)
   blocks/                 recortes por componente e por animação
   reference/              HTML executável com os valores originais
 
-assets/exercises/<sessao>/<slug>.webp    mídias dos exercícios
+assets/exercises/<sessao>/<slug>.webp    mídias dos exercícios (recodificadas)
+scripts/recode-media.py                  recodifica um .webp original para o card
 
 src/                      (a criar)
   theme.ts                gerado a partir de design/tokens.json

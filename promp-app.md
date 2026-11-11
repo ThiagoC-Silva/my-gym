@@ -98,7 +98,8 @@ Cinco abas, nesta ordem:
 1. **Cabeçalho** — número `01` (800/13, `accent.red`) · nome (700/17) +
    grupo muscular (500/12, muted) · `ExerciseCheck` 32 à direita.
 2. **`ExerciseMedia`** — altura **136** (`size.media`), raio 20, `shadow.sunkenLg`.
-   Com `source`: WebP animado em loop, `resizeMode: cover`.
+   Com `source`: WebP animado em loop, `resizeMode: contain`, centralizado sobre as listras
+   (que continuam visíveis nas laterais).
    Sem `source`: listras 135° (`#202020`/`#232323`, 10 px cada) + ícone de imagem 34 +
    nome do arquivo em JetBrains Mono 10 (ex.: `supino-reto.webp`).
 3. **`StatGrid`** — 4 colunas iguais, gap 8: **Séries · Reps · Carga · Descanso**.
@@ -390,14 +391,11 @@ natural, e o formato de `Overrides` já deve ser pensado para comportar essa cha
    Existem **8, todos no caminho certo** (os 7 de Pull + `rosca-concentrada-banco.webp` no Upper).
    **Faltam 23**, distribuídos entre Push (6), Inferiores A (6), Inferiores B (6) e Upper (5).
    As 5 pastas de sessão já existem com os nomes corretos.
-2. **Mídia superdimensionada (bloqueante)** — os 8 arquivos somam 9 MB para um card de
-   322×136 pt, variando de 356×329 a 1080×1080 px e de 12 a 131 frames. A recodificação
-   tentada com Pillow foi revertida: perdeu 12 dos 60 frames de `remada-baixa.webp` e não
-   preserva a duração por frame. Refazer com `img2webp`/libwebp ou ffmpeg, validando
-   contagem de frames e duração do loop contra o original. Ver `CLAUDE.md`, topo.
-3. **Proporção da mídia (bloqueante)** — a caixa de 2,37:1 com `cover` corta ~58% da altura
-   de assets quadrados, escondendo a parte relevante do movimento em vários exercícios.
-   Decidir entre aumentar `size.media`, reenquadrar os assets ou usar `contain`.
+2. ~~Mídia superdimensionada~~ — **resolvido em 11/11/2026.** Recodificados com
+   `scripts/recode-media.py` (libwebp): 9,0 → 1,9 MB, frames e duração por frame idênticos
+   aos originais. Ver `CLAUDE.md > Assets`.
+3. ~~Proporção da mídia~~ — **resolvido em 11/11/2026:** `contain` sobre as listras, com a
+   margem branca de cada asset cortada automaticamente. `size.media` continua 136.
 4. **Reps como faixa** — a ficha oficial prescreve faixas ("4 × 8–10"); o modelo guarda só o
    topo, para casar com o stepper do `EditSheet`. O topo é o número que importa para a
    progressão, mas o piso some da tela e ele é a meta mínima da série. Custo baixo de

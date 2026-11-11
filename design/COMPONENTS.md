@@ -22,7 +22,7 @@ Fundo `surface.card`, raio 28, `shadow.raised`, padding 18, coluna com gap 14.
 
 Ordem interna:
 1. **Cabeçalho** — número `01` (800/13 `accent.red`) · nome (700/17) + grupo muscular (500/12 muted) · `ExerciseCheck` à direita.
-2. **ExerciseMedia** — altura 136, raio 20, listras 135°, `shadow.sunkenLg`. Contém WebP animado em loop (`object-fit: cover`). Placeholder: ícone de imagem 34 + nome do arquivo.
+2. **ExerciseMedia** — altura 136, raio 20, listras 135°, `shadow.sunkenLg`. Contém WebP animado em loop (`object-fit: contain`, centralizado, sobre as listras, que ficam sempre no fundo e aparecem nas laterais). Placeholder: ícone de imagem 34 + nome do arquivo. *(Era `cover`; trocado em 11/11/2026 porque `cover` cortava ~58% da altura dos assets quadrados, inclusive a cabeça e as mãos.)*
 3. **StatGrid** — 4 colunas iguais, gap 8: Séries · Reps · Carga · Descanso.
 4. **SetRow** — esferas à esquerda (wrap, gap 10) · contagem `n/total` à direita (600/12 muted).
 
