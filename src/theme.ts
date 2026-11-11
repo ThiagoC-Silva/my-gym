@@ -163,6 +163,10 @@ export const space = tokens.space;
 export const size = tokens.size;
 export const edit = tokens.edit;
 
+const { _fonte, ...componentTokens } = tokens.component;
+/** Medidas específicas de cada componente (de COMPONENTS.md / referência), agrupadas por componente. */
+export const component = componentTokens;
+
 // ---------------------------------------------------------------------------
 // Tipografia
 // ---------------------------------------------------------------------------
@@ -311,6 +315,7 @@ export const theme = {
   radius,
   space,
   size,
+  component,
   text,
   easing,
   motion,

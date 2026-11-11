@@ -29,6 +29,10 @@ Conflito **visual** → vence o design (1–5). Conflito de **comportamento ou d
 - **Anel:** sempre `gradient.brand`. Não existe "cor de concluído" separada nos tokens; 100% apenas
   fecha o arco.
 - **Aba inicial:** pelo dia da semana (`promp-app.md §5`), mesmo que os PNGs mostrem terça com Push.
+- **Medidas de componente (11/11/2026):** valores que só existem em `COMPONENTS.md`/HTML de
+  referência são **transcritos para `tokens.json`** (seção `component`, e sombras/fontes novas
+  em `shadow`/`font`), nunca digitados no código. Medidas tiradas de PNG levam a origem em
+  `component._fonte`. Header, `EditSheet` e `SessionBanner` ainda não foram transcritos.
 - **Mídia (11/11/2026):** `resizeMode: contain`, centralizada sobre as listras, que continuam
   no fundo e aparecem nas laterais. `size.media` continua 136. A margem branca de cada asset
   é cortada na recodificação, não em runtime.
@@ -52,6 +56,7 @@ Conflito **visual** → vence o design (1–5). Conflito de **comportamento ou d
 
 | Efeito do design | Técnica |
 |---|---|
+| Qualquer superfície com fundo + sombra | `<Surface radius fill shadow>` (`src/components/Surface.tsx`): sombras externas no View, fundo (cor ou degradê), sombras `inset` num overlay e só então o conteúdo, como no CSS. Não pôr `inset` direto num View cujo fundo seja um filho (o filho cobre a sombra). Não usar `overflow: hidden` no View que tem a sombra externa; recortar dentro de um filho `absoluteFill`. |
 | Sombra dupla neumórfica | `boxShadow` (RN ≥ 0.76, aceita múltiplas sombras como no CSS). Se indisponível, dois `View` aninhados — um por camada. |
 | Sombra `inset` (afundado) | `boxShadow` com `inset`. Sem ele, `LinearGradient` interno simulando o degradê de profundidade. |
 | Borda 2 px em degradê | `LinearGradient` externo com `padding: 2` + `borderRadius: 28` envolvendo um `View` com `surface.card` e `borderRadius: 26`. |
@@ -82,6 +87,9 @@ Estado: um único hook/contexto `useWorkout`. "Exercício concluído" é **deriv
    `shadow.*`, `text.*`, `radius.*`, `space.*`, `size.*`, `motion.*` e `gradientProps(...)`.
    `src/App.tsx` é por ora uma prova de fumaça do tema, a ser substituída pela ficha.
 2. Implementar componentes isolados e comparar com `design/screens/08-componentes.png`.
+   Em andamento: os componentes da prancha 08 estão em `src/components/`, e
+   `src/dev/ComponentShowcase.tsx` (aberto pelo `App.tsx`) mostra todos os estados com dados
+   reais do Pull. Ainda falta a comparação no aparelho.
 3. Montar a tela e validar cada estado contra `design/screens/01` a `06`.
 4. Implementar movimento conforme `DESIGN.md §7` e comparar com
    `design/reference/Ficha de Treino - Referência.dc.html` aberto no navegador.
