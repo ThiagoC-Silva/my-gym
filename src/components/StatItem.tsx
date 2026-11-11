@@ -25,14 +25,20 @@ export function StatVisual({ label, value, unit, counting, pressed }: StatItemPr
       <Text style={[text.label, { color: color.text.label }]} numberOfLines={1}>
         {label}
       </Text>
-      <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
-        <Text style={[text.stat, { color: counting ? color.accent.red : color.text.primary }]} numberOfLines={1}>
-          {value}
-        </Text>
+      {/*
+        Unidade como trecho do mesmo parágrafo do valor (como o <span> da referência):
+        a linha fica com a altura do valor, com ou sem unidade. Os 2 pt de margem
+        viram um View inline, já que trecho de texto aninhado não aceita margem.
+      */}
+      <Text style={[text.stat, { color: counting ? color.accent.red : color.text.primary }]} numberOfLines={1}>
+        {value}
         {unit !== undefined && !counting && (
-          <Text style={[text.unit, { color: color.text.muted, marginLeft: c.unitGap }]}>{unit}</Text>
+          <>
+            <View style={{ width: c.unitGap, height: 0 }} />
+            <Text style={[text.unit, { color: color.text.muted }]}>{unit}</Text>
+          </>
         )}
-      </View>
+      </Text>
       <View pointerEvents="none" style={{ position: 'absolute', bottom: c.pencilBottom, right: c.pencilRight }}>
         <PencilIcon size={c.pencil} color={color.accent.orange} strokeWidth={c.pencilStroke} />
       </View>

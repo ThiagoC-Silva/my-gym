@@ -18,7 +18,9 @@ const MaskedView = MaskedViewUntyped as unknown as ComponentType<
 
 export function GradientText({ children, style, fill }: { children: string; style: TextStyle; fill: Gradient }) {
   return (
-    <MaskedView maskElement={<Text style={style}>{children}</Text>}>
+    // alignSelf: o degradê acompanha a largura do texto, não a da coluna (senão
+    // um "00:48" curto mostraria só o começo laranja do degradê).
+    <MaskedView style={{ alignSelf: 'flex-start' }} maskElement={<Text style={style}>{children}</Text>}>
       {/* O degradê precisa do mesmo tamanho do texto: um Text invisível o dimensiona. */}
       <LinearGradient {...gradientProps(fill)}>
         <Text style={[style, { opacity: 0 }]}>{children}</Text>
