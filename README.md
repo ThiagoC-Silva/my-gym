@@ -14,14 +14,15 @@ Alvo: 390 × 844 pt (iPhone 14/15), tema escuro fixo, pt-BR.
 
 ## Estado atual
 
-> 🟡 **Pré-implementação.** O pacote de design está completo e a especificação validada.
-> Ainda não existe código: sem `package.json`, sem `src/`.
+> 🟡 **Início da implementação.** O projeto Expo está criado e o tema já sai de `tokens.json`.
+> A tela ainda é uma prova de fumaça do tema; os componentes vêm a seguir.
 
 | Área | Situação |
 |---|---|
 | Design (tokens, componentes, 9 telas, HTML de referência) | ✅ completo |
 | Especificação funcional (`promp-app.md`) | ✅ validada em 10/11/2026 |
-| Código do app | ⬜ não iniciado |
+| Scaffold Expo (SDK 58) + `src/theme.ts` | ✅ 11/11/2026 |
+| Componentes e tela | ⬜ não iniciados |
 | Assets `.webp` dos exercícios | 🟡 8 de 31 (Pull completo, 1 do Upper), recodificados (1,9 MB) |
 
 ---
@@ -44,9 +45,10 @@ Alvo: 390 × 844 pt (iPhone 14/15), tema escuro fixo, pt-BR.
 
 ## Stack
 
-Expo (React Native) + TypeScript, rodando no Expo Go. Sem backend e sem login.
+Expo SDK 58 (React Native 0.88) + TypeScript, rodando no Expo Go. Sem backend e sem login.
+Node LTS instalado via nvm.
 
-`react-native-svg` · `expo-linear-gradient` · `@react-native-masked-view/masked-view` ·
+`expo-image` (WebP animado) · `react-native-svg` · `expo-linear-gradient` · `@react-native-masked-view/masked-view` ·
 `expo-haptics` · `@expo/vector-icons` · `react-native-safe-area-context` ·
 `@react-native-async-storage/async-storage` · `expo-font` + Poppins e JetBrains Mono
 
@@ -86,9 +88,11 @@ design/                   pacote de handoff (fonte da verdade visual)
 assets/exercises/<sessao>/<slug>.webp    mídias dos exercícios (recodificadas)
 scripts/recode-media.py                  recodifica um .webp original para o card
 
-src/                      (a criar)
-  theme.ts                gerado a partir de design/tokens.json
-  data/ficha.ts
+index.ts                  ponto de entrada do Expo → src/App.tsx
+src/
+  App.tsx                 por ora, prova de fumaça do tema
+  theme.ts                importa design/tokens.json e converte para RN
+  data/ficha.ts           (a criar)
   hooks/                  useWorkout · useRestTimer · useReducedMotion
   components/             Header, WorkoutTabs, ExerciseCard, ProgressRing, RestPanel, …
 ```
@@ -110,7 +114,7 @@ As regras completas de implementação estão em [`CLAUDE.md`](CLAUDE.md).
 
 ## Roadmap
 
-1. Scaffold do Expo + `src/theme.ts` gerado de `tokens.json`.
+1. ~~Scaffold do Expo + `src/theme.ts` gerado de `tokens.json`.~~ ✅
 2. Componentes isolados, comparados com `design/screens/08-componentes.png`.
 3. Montagem da tela e validação dos estados `01`–`06`.
 4. Movimento conforme `DESIGN.md §7`, incluindo reduced-motion.

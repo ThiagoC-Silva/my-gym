@@ -58,6 +58,8 @@ Conflito **visual** → vence o design (1–5). Conflito de **comportamento ou d
 | Texto em degradê (timer) | `MaskedView` + `LinearGradient`. |
 | Anel de progresso | `react-native-svg`: `r=36`, `strokeWidth=9`, `strokeLinecap="round"`, rotação −90°, `strokeDashoffset = 226.19 × (1 − p)`. |
 | Listras 135° da mídia | `LinearGradient` com stops repetidos, ou SVG `<Pattern>`. |
+| WebP animado da mídia | `expo-image` com `contentFit="contain"` sobre as listras e `useAppleWebpCodec={false}` (o codec da Apple pode tocar WebP animado na velocidade errada). |
+| Degradê em ângulo CSS | `<LinearGradient {...gradientProps(gradient.brand, largura / altura)}>`: o ângulo CSS depende da proporção da caixa; omitir `aspect` só em elementos quadrados ou circulares. |
 | "NOV'26" gravado | Texto `#1C1C1C` com `textShadowColor` claro deslocado. |
 
 ## Mapa de componentes
@@ -74,7 +76,11 @@ Estado: um único hook/contexto `useWorkout`. "Exercício concluído" é **deriv
 
 ## Fluxo de trabalho
 
-1. Gerar `src/theme.ts` a partir de `design/tokens.json`.
+1. ~~Gerar `src/theme.ts` a partir de `design/tokens.json`.~~ Feito em 11/11/2026. O
+   `theme.ts` **importa** o `tokens.json` e converte os valores na carga do módulo, sem gerar
+   arquivo. Para mudar um valor, edite o JSON, nunca o `theme.ts`. Usar sempre `color.*`,
+   `shadow.*`, `text.*`, `radius.*`, `space.*`, `size.*`, `motion.*` e `gradientProps(...)`.
+   `src/App.tsx` é por ora uma prova de fumaça do tema, a ser substituída pela ficha.
 2. Implementar componentes isolados e comparar com `design/screens/08-componentes.png`.
 3. Montar a tela e validar cada estado contra `design/screens/01` a `06`.
 4. Implementar movimento conforme `DESIGN.md §7` e comparar com
@@ -88,7 +94,15 @@ com o PNG correspondente ao final de cada etapa.
 ```bash
 npx expo start          # Expo Go
 npx tsc --noEmit        # checagem de tipos — precisa passar limpo
+npx expo install <pkg>  # sempre usar este em vez de npm install: escolhe a versão do SDK
+npx expo-doctor         # diagnóstico de dependências e configuração
 ```
+
+Stack: Expo SDK 58 · React Native 0.88 · React 19.3 · TypeScript 6. O Node (LTS 26) foi
+instalado via **nvm**. Em shell não interativo, carregar o nvm antes:
+`export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"`.
+O Expo muda APIs a cada SDK: conferir a documentação versionada
+(`https://docs.expo.dev/versions/v58.0.0/`) antes de usar uma API de memória.
 
 ## Assets
 

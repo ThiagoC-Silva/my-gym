@@ -36,3 +36,11 @@ npm-debug.*
 yarn-debug.*
 yarn-error.*
 *.log
+
+# Expo / Metro / TypeScript (do template do create-expo-app)
+expo-env.d.ts
+.kotlin/
+.metro-health-check*
+*.pem
+*.tsbuildinfo
+.env*.local
