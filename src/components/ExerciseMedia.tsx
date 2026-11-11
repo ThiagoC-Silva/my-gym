@@ -45,7 +45,6 @@ export function ExerciseMedia({ source, fileName }: { source?: number; fileName:
           autoplay
           useAppleWebpCodec={false}
           style={[StyleSheet.absoluteFill, { borderRadius: radius.media }]}
-          accessibilityLabel={`Demonstração: ${fileName}`}
         />
       ) : (
         <View style={{ alignItems: 'center', gap: component.media.placeholderGap }}>

@@ -1,20 +1,25 @@
 /**
  * Painel de descanso — COMPONENTS.md > RestPanel. Altura 84.
- * Só o painel; a posição flutuante (left 16 / right 120 / bottom 34) é da tela.
- * Pulso dos últimos 5 s e entrada animada ficam para a etapa de movimento.
+ * Só o painel; a posição flutuante (left 16 / right 120 / bottom 34) e a entrada
+ * (SlideIn) são da tela. Aqui: a barra desce linear pela duração e, nos últimos 5 s,
+ * o tempo fica vermelho sólido e pulsa (sem pulso com reduced-motion).
  */
 import { LinearGradient } from 'expo-linear-gradient';
-import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, AppState, Easing, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from './Text';
 
 import { formatClock } from '../format';
+import { useReducedMotion } from '../hooks/useReducedMotion';
+import { timing } from '../motion';
 import { color, component, gradient, gradientProps, motion, radius, shadow, size, text } from '../theme';
 import { GradientText } from './GradientText';
 import { Surface } from './Surface';
 
 export interface RestPanelProps {
   remainingMs: number;
+  /** Fim do descanso (timestamp); a barra anima até ele. */
+  endsAt: number;
   totalMs: number;
   /** "Remada baixa · série 2" */
   line: string;
@@ -50,7 +55,6 @@ function MiniButton({
   return (
     <Pressable
       onPress={onPress}
-      accessibilityRole="button"
       hitSlop={hitSlop}
       onLayout={(e) => setBox(e.nativeEvent.layout)}
     >
@@ -66,11 +70,64 @@ function MiniButton({
   );
 }
 
-export function RestPanel({ remainingMs, totalMs, line, onAdd15, onSkip }: RestPanelProps) {
+/** Fração restante do descanso, 0–1. */
+function fractionLeft(endsAt: number, totalMs: number) {
+  return totalMs > 0 ? Math.min(1, Math.max(0, (endsAt - Date.now()) / totalMs)) : 0;
+}
+
+/** Barra contínua até `endsAt`; reinicia em +15s e ao voltar do segundo plano. */
+function useBar(endsAt: number, totalMs: number) {
+  const bar = useRef(new Animated.Value(fractionLeft(endsAt, totalMs))).current;
+  useEffect(() => {
+    let a: Animated.CompositeAnimation | undefined;
+    const run = () => {
+      a?.stop();
+      bar.setValue(fractionLeft(endsAt, totalMs));
+      a = Animated.timing(bar, {
+        toValue: 0,
+        duration: Math.max(0, endsAt - Date.now()),
+        easing: Easing.linear,
+        useNativeDriver: true,
+      });
+      a.start();
+    };
+    run();
+    const sub = AppState.addEventListener('change', (st) => st === 'active' && run());
+    return () => {
+      a?.stop();
+      sub.remove();
+    };
+  }, [endsAt, totalMs, bar]);
+  return bar;
+}
+
+/** Pulso de opacidade 1 ↔ .35 (rfPulse: metade do ciclo para cada lado). */
+function usePulse(on: boolean) {
+  const o = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    if (!on) {
+      o.setValue(1);
+      return;
+    }
+    const [hi, lo] = motion.restPulse.opacity;
+    const half = { duration: motion.restPulse.duration / 2, easing: motion.restPulse.easing };
+    const loop = Animated.loop(Animated.sequence([timing(o, lo, half), timing(o, hi, half)]));
+    loop.start();
+    return () => {
+      loop.stop();
+      o.setValue(1);
+    };
+  }, [on, o]);
+  return o;
+}
+
+export function RestPanel({ remainingMs, endsAt, totalMs, line, onAdd15, onSkip }: RestPanelProps) {
   const c = component.restPanel;
   const clock = formatClock(remainingMs);
   const final = Math.ceil(remainingMs / 1000) <= motion.restPulse.thresholdSeconds;
-  const fraction = totalMs > 0 ? Math.min(1, Math.max(0, remainingMs / totalMs)) : 0;
+  const reduced = useReducedMotion();
+  const bar = useBar(endsAt, totalMs);
+  const pulse = usePulse(final && !reduced);
 
   return (
     <Surface
@@ -89,7 +146,9 @@ export function RestPanel({ remainingMs, totalMs, line, onAdd15, onSkip }: RestP
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text style={[text.restLabel, { color: color.text.muted }]}>Descanso</Text>
         {final ? (
-          <Text style={[text.timer, { color: color.accent.red }]}>{clock}</Text>
+          <Animated.View style={{ opacity: pulse }}>
+            <Text style={[text.timer, { color: color.accent.red }]}>{clock}</Text>
+          </Animated.View>
         ) : (
           <GradientText style={text.timer} fill={gradient.text}>
             {clock}
@@ -110,7 +169,10 @@ export function RestPanel({ remainingMs, totalMs, line, onAdd15, onSkip }: RestP
         <View
           style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: c.bar, backgroundColor: color.surface.barTrack }}
         >
-          <LinearGradient {...gradientProps(gradient.bar)} style={{ height: '100%', width: `${fraction * 100}%` }} />
+          {/* scaleX a partir da esquerda = `width` do CSS (o degradê encolhe junto). */}
+          <Animated.View style={{ height: '100%', transformOrigin: 'left', transform: [{ scaleX: bar }] }}>
+            <LinearGradient {...gradientProps(gradient.bar)} style={StyleSheet.absoluteFill} />
+          </Animated.View>
         </View>
       </View>
     </Surface>

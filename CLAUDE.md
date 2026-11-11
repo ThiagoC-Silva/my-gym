@@ -41,6 +41,12 @@ Conflito **visual** → vence o design (1–5). Conflito de **comportamento ou d
   - testado no aparelho em 390, 360 e 320 pt (`adb shell wm density 500/542/610`) e com fonte
     1,3×; restaurar com `wm density reset` e `settings put system font_scale 1.0`.
 - **"Restaurar" (EditSheet):** volta os steppers ao padrão da ficha; só persiste com "Salvar".
+- **Leitor de tela (11/11/2026):** fora deste build. Sem `accessibility*` nas props (foram
+  removidas). Hit-area 44, reduced-motion e limite de fonte continuam.
+- **Voltar do Android (11/11/2026):** com o `EditSheet` aberto, fecha a folha sem salvar (mesma
+  saída animada do scrim/×). Fora dela, o comportamento padrão (sair).
+- **Notificação de fim de descanso com o app fechado:** fora do escopo (`promp-app.md §13`);
+  o aviso só aparece com o app aberto.
 - **Medidas de componente (11/11/2026):** valores que só existem em `COMPONENTS.md`/HTML de
   referência são **transcritos para `tokens.json`** (seção `component`, e sombras/fontes novas
   em `shadow`/`font`), nunca digitados no código. Medidas tiradas de PNG levam a origem em
@@ -103,8 +109,14 @@ Estado: um único hook/contexto `useWorkout`. "Exercício concluído" é **deriv
    conferidas em pt contra `01-inicio.png` (desvio < 2 pt); estados 02–06 exercitados no
    aparelho (descanso, +15s, Pular, últimos 5 s, aviso, edição, persistência, banner, Reiniciar,
    alerta de desmarcar, troca de aba).
-4. Implementar movimento conforme `DESIGN.md §7` e comparar com
-   `design/reference/Ficha de Treino - Referência.dc.html` aberto no navegador.
+4. ~~Implementar movimento conforme `DESIGN.md §7`~~ Feito em 11/11/2026 com `Animated` nativo
+   (`src/motion.ts`, `src/components/SlideIn.tsx`, `src/hooks/useReducedMotion.ts`), gravado no
+   aparelho (`adb shell screenrecord`) e conferido quadro a quadro. Valores que faltavam no §7
+   foram transcritos dos keyframes da referência para `tokens.json > motion` (ver `_fonte`).
+   Regras: animação só no gatilho, nunca na montagem (abrir o app, trocar de aba); saídas =
+   entrada invertida; fade de grupo com camadas sobrepostas precisa de
+   `needsOffscreenAlphaCompositing` no Android (mas ele corta sombra externa); a troca de aba
+   vai em `startTransition` para a pílula (driver JS) não travar enquanto os cards montam.
 
 Trabalhar por partes (tema → componentes → tela → estados → animações) e pedir uma comparação
 com o PNG correspondente ao final de cada etapa.

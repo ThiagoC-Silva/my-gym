@@ -1,20 +1,25 @@
 /**
  * Folha de edição — COMPONENTS.md > EditSheet e promp-app.md §7.4.
  * Valores locais até "Salvar". "Restaurar" volta os steppers ao padrão da ficha
- * (só persiste ao salvar). Toque no scrim fecha sem salvar.
+ * (só persiste ao salvar). Toque no scrim, no × ou no "voltar" do Android fecha sem salvar.
+ * Movimento (DESIGN.md §7): scrim em fade, folha sobe; ao fechar ou salvar, a saída
+ * invertida roda antes de avisar a tela.
  */
-import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, BackHandler, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from './Text';
 
 import { formatLoad, formatNumber } from '../format';
 import { useMinHitSlop } from '../hooks/useMinHitSlop';
+import { useReducedMotion } from '../hooks/useReducedMotion';
+import { reducedFade, timing } from '../motion';
 import type { Edit } from '../state/progress';
-import { color, component, edit as steps, fitOneLine, gradient, radius, shadow, size, text } from '../theme';
+import { color, component, edit as steps, fitOneLine, gradient, motion, radius, shadow, size, text } from '../theme';
 import type { Exercise } from '../types';
 import type { StatField } from './ExerciseCard';
 import { CloseIcon, MinusIcon, PlusIcon } from './icons';
+import { SlideIn } from './SlideIn';
 import { Surface } from './Surface';
 
 type Values = Required<Pick<Exercise, 'series' | 'reps' | 'descansoSeg'>> & { carga: number | undefined };
@@ -54,11 +59,11 @@ function display(key: StatField, v: Values, repsUnidade?: string): { value: stri
   return { value: formatNumber(v.series) };
 }
 
-function StepButton({ kind, onPress, label }: { kind: 'minus' | 'plus'; onPress: () => void; label: string }) {
+function StepButton({ kind, onPress }: { kind: 'minus' | 'plus'; onPress: () => void }) {
   const s = component.sheet;
   const plus = kind === 'plus';
   return (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label}>
+    <Pressable onPress={onPress}>
       <Surface
         radius={radius.pill}
         fill={plus ? gradient.fill : color.surface.bg}
@@ -92,7 +97,7 @@ function StepperRow({
 }) {
   const s = component.sheet;
   return (
-    <Pressable onPress={onFocus} accessible={false}>
+    <Pressable onPress={onFocus}>
       <Surface
         radius={radius.sheetRow}
         fill={focused ? color.surface.sunken : undefined}
@@ -112,11 +117,10 @@ function StepperRow({
           </Text>
           <Text style={[text.stepHint, { color: color.text.disabled }]}>{hint}</Text>
         </View>
-        <StepButton kind="minus" label={`Diminuir ${label}`} onPress={() => onStep(-1)} />
+        <StepButton kind="minus" onPress={() => onStep(-1)} />
         <Text
           style={[text.sheetValue, { width: s.valueWidth, textAlign: 'center', color: color.text.primary }]}
           numberOfLines={1}
-          accessibilityLabel={`${label}: ${shown.value}${shown.unit ? ` ${shown.unit}` : ''}`}
         >
           {shown.value}
           {shown.unit !== undefined && (
@@ -126,7 +130,7 @@ function StepperRow({
             </>
           )}
         </Text>
-        <StepButton kind="plus" label={`Aumentar ${label}`} onPress={() => onStep(1)} />
+        <StepButton kind="plus" onPress={() => onStep(1)} />
       </Surface>
     </Pressable>
   );
@@ -137,7 +141,9 @@ export interface EditSheetProps {
   exercise: Exercise;
   base: Exercise;
   initialField: StatField;
+  /** Chamado depois da animação de saída. */
   onClose: () => void;
+  /** Persiste na hora; a folha sai em seguida e chama `onClose`. */
   onSave: (edit: Edit) => void;
 }
 
@@ -155,115 +161,149 @@ export function EditSheet({ number, exercise, base, initialField, onClose, onSav
   const insets = useSafeAreaInsets();
   const extraBottom = Math.max(0, insets.bottom - component.screen.homeIndicator);
 
+  // Ação pendente (fechar ou salvar) que roda quando a saída termina.
+  const [closing, setClosing] = useState<(() => void) | null>(null);
+  const dismiss = (after: () => void) => setClosing((c) => c ?? after);
+
+  // "Voltar" do Android = fechar sem salvar. Fica registrado enquanto a folha existe
+  // (inclusive durante a saída, para um segundo toque não sair do app).
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      setClosing((c) => c ?? closeRef.current);
+      return true;
+    });
+    return () => sub.remove();
+  }, []);
+
+  const reduced = useReducedMotion();
+  const scrim = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    const to = closing ? 0 : 1;
+    const a = reduced
+      ? reducedFade(scrim, to)
+      : timing(scrim, to, { duration: motion.sheetIn.scrimFade, easing: motion.sheetIn.easing });
+    a.start();
+    return () => a.stop();
+  }, [closing, reduced, scrim]);
+
   const step = (key: StatField, dir: 1 | -1) => {
     setFocus(key);
     setValues((v) => ({ ...v, [key]: stepValue(key, v[key], dir) ?? v[key] }));
   };
 
   return (
-    <View style={StyleSheet.absoluteFill}>
-      <Pressable
-        style={[StyleSheet.absoluteFill, { backgroundColor: color.scrim }]}
-        onPress={onClose}
-        accessibilityRole="button"
-        accessibilityLabel="Fechar sem salvar"
-      />
-      <View
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: color.surface.bg,
-          borderTopLeftRadius: radius.sheet,
-          borderTopRightRadius: radius.sheet,
-          paddingTop: s.padTop,
-          paddingHorizontal: s.padX,
-          paddingBottom: s.padBottom + extraBottom,
-          gap: s.gap,
-        }}
-        accessibilityViewIsModal
+    <View style={StyleSheet.absoluteFill} pointerEvents={closing ? 'none' : 'auto'}>
+      <Animated.View style={[StyleSheet.absoluteFill, { opacity: scrim }]}>
+        <Pressable
+          style={[StyleSheet.absoluteFill, { backgroundColor: color.scrim }]}
+          onPress={() => dismiss(onClose)}
+        />
+      </Animated.View>
+      <SlideIn
+        show={!closing}
+        token={motion.sheetIn}
+        onExited={() => closing?.()}
+        style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}
       >
         <View
           style={{
-            alignSelf: 'center',
-            width: s.handleWidth,
-            height: s.handleHeight,
-            borderRadius: radius.pill,
-            backgroundColor: color.border.idle,
+            backgroundColor: color.surface.bg,
+            borderTopLeftRadius: radius.sheet,
+            borderTopRightRadius: radius.sheet,
+            paddingTop: s.padTop,
+            paddingHorizontal: s.padX,
+            paddingBottom: s.padBottom + extraBottom,
+            gap: s.gap,
           }}
-        />
+        >
+          <View
+            style={{
+              alignSelf: 'center',
+              width: s.handleWidth,
+              height: s.handleHeight,
+              borderRadius: radius.pill,
+              backgroundColor: color.border.idle,
+            }}
+          />
 
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: c.headerGap }}>
-          <Text style={[text.cardNumber, { color: color.accent.red, paddingTop: c.numberTop }]}>
-            {String(number).padStart(2, '0')}
-          </Text>
-          <View style={{ flex: 1, gap: c.titleGap }}>
-            <Text style={[text.sheetKicker, { color: color.text.muted }]}>Editar exercício</Text>
-            <Text style={[text.cardTitle, { color: color.text.primary }]} numberOfLines={2}>
-              {exercise.nome}
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: c.headerGap }}>
+            <Text style={[text.cardNumber, { color: color.accent.red, paddingTop: c.numberTop }]}>
+              {String(number).padStart(2, '0')}
             </Text>
+            <View style={{ flex: 1, gap: c.titleGap }}>
+              <Text style={[text.sheetKicker, { color: color.text.muted }]}>Editar exercício</Text>
+              <Text style={[text.cardTitle, { color: color.text.primary }]} numberOfLines={2}>
+                {exercise.nome}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => dismiss(onClose)}
+              hitSlop={closeHit}
+              onLayout={onCloseLayout}
+            >
+              <Surface
+                radius={radius.pill}
+                fill={color.surface.bg}
+                shadow={shadow.sphere}
+                style={{ width: s.close, height: s.close, alignItems: 'center', justifyContent: 'center' }}
+              >
+                <CloseIcon size={s.closeGlyph} color={color.text.toastSub} strokeWidth={s.glyphStroke} />
+              </Surface>
+            </Pressable>
           </View>
-          <Pressable
-            onPress={onClose}
-            hitSlop={closeHit}
-            onLayout={onCloseLayout}
-            accessibilityRole="button"
-            accessibilityLabel="Fechar sem salvar"
-          >
-            <Surface
-              radius={radius.pill}
-              fill={color.surface.bg}
-              shadow={shadow.sphere}
-              style={{ width: s.close, height: s.close, alignItems: 'center', justifyContent: 'center' }}
-            >
-              <CloseIcon size={s.closeGlyph} color={color.text.toastSub} strokeWidth={s.glyphStroke} />
-            </Surface>
-          </Pressable>
-        </View>
 
-        <View>
-          {fields.map((f) => (
-            <StepperRow
-              key={f.key}
-              label={f.label}
-              hint={f.hint}
-              focused={focus === f.key}
-              shown={display(f.key, values, exercise.repsUnidade)}
-              onFocus={() => setFocus(f.key)}
-              onStep={(dir) => step(f.key, dir)}
-            />
-          ))}
-        </View>
+          <View>
+            {fields.map((f) => (
+              <StepperRow
+                key={f.key}
+                label={f.label}
+                hint={f.hint}
+                focused={focus === f.key}
+                shown={display(f.key, values, exercise.repsUnidade)}
+                onFocus={() => setFocus(f.key)}
+                onStep={(dir) => step(f.key, dir)}
+              />
+            ))}
+          </View>
 
-        <View style={{ flexDirection: 'row', gap: s.footerGap, height: s.footerHeight }}>
-          <Pressable
-            onPress={() =>
-              setValues({ series: base.series, reps: base.reps, carga: base.carga, descansoSeg: base.descansoSeg })
-            }
-            accessibilityRole="button"
-          >
-            <Surface
-              radius={radius.button}
-              fill={color.surface.bg}
-              shadow={shadow.raisedSm}
-              style={{ height: '100%', paddingHorizontal: s.restorePadX, justifyContent: 'center' }}
+          <View style={{ flexDirection: 'row', gap: s.footerGap, height: s.footerHeight }}>
+            <Pressable
+              onPress={() =>
+                setValues({ series: base.series, reps: base.reps, carga: base.carga, descansoSeg: base.descansoSeg })
+              }
+
             >
-              <Text style={[text.buttonSecondary, { color: color.text.toastSub }]}>Restaurar</Text>
-            </Surface>
-          </Pressable>
-          <Pressable onPress={() => onSave(values)} style={{ flex: 1 }} accessibilityRole="button">
-            <Surface
-              radius={radius.button}
-              fill={gradient.brand}
-              shadow={shadow.cta}
-              style={{ height: '100%', alignItems: 'center', justifyContent: 'center' }}
+              <Surface
+                radius={radius.button}
+                fill={color.surface.bg}
+                shadow={shadow.raisedSm}
+                style={{ height: '100%', paddingHorizontal: s.restorePadX, justifyContent: 'center' }}
+              >
+                <Text style={[text.buttonSecondary, { color: color.text.toastSub }]}>Restaurar</Text>
+              </Surface>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                if (closing) return;
+                onSave(values);
+                dismiss(onClose);
+              }}
+              style={{ flex: 1 }}
             >
-              <Text style={[text.button, { color: color.text.onAccent }]}>Salvar alterações</Text>
-            </Surface>
-          </Pressable>
+              <Surface
+                radius={radius.button}
+                fill={gradient.brand}
+                shadow={shadow.cta}
+                style={{ height: '100%', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <Text style={[text.button, { color: color.text.onAccent }]}>Salvar alterações</Text>
+              </Surface>
+            </Pressable>
+          </View>
         </View>
-      </View>
+      </SlideIn>
     </View>
   );
 }

@@ -55,13 +55,10 @@ export function StatVisual({ label, value, unit, counting, pressed }: StatItemPr
 }
 
 export function StatItem({ onPress, ...props }: StatItemProps & { onPress: () => void }) {
-  const unit = props.unit && !props.counting ? ` ${props.unit}` : '';
   return (
     <Pressable
       onPress={onPress}
       style={{ flex: 1 }}
-      accessibilityRole="button"
-      accessibilityLabel={`${props.label}: ${props.value}${unit}. Editar`}
     >
       {({ pressed }) => <StatVisual {...props} pressed={pressed} />}
     </Pressable>

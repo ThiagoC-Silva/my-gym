@@ -339,12 +339,12 @@ todas as animações viram fade de 150 ms e o pulso dos 5 s é removido.
 
 ## 12. Acessibilidade
 
-- `accessibilityLabel` em: esfera ("Série 2 de 4, concluída"), `ExerciseCheck`
-  ("Supino reto, 4 de 4 séries concluídas"), anel ("Progresso do treino: 35%, 6 de 17 séries"),
-  abas, `+15s`, `Pular`, steppers.
-- `accessibilityRole` correto (`button`, `tab`, `progressbar`, `checkbox`).
-- Hit-area mínima **44 × 44** mesmo onde o visual é menor (esfera 38, check 32).
-- Respeitar a safe area (notch e barra inferior).
+- **Leitor de tela (TalkBack/VoiceOver): fora deste build** (decisão de 11/11/2026). Não usar
+  `accessibilityLabel`, `accessibilityRole`, `accessibilityState` e afins.
+- Continuam valendo, porque não dependem de leitor de tela:
+  - hit-area mínima **44 × 44** mesmo onde o visual é menor (esfera 38, check 32);
+  - reduced-motion (§11) e limite de escala da fonte do sistema (`font.maxScale`);
+  - safe area (notch e barra inferior).
 
 ---
 
@@ -379,6 +379,7 @@ natural, e o formato de `Overrides` já deve ser pensado para comportar essa cha
 - [ ] Nenhuma cor, sombra, raio ou fonte fora de `theme.ts` (gerado de `tokens.json`).
 - [ ] Todas as sombras neumórficas têm as **duas** camadas (escura + realce claro).
 - [ ] Reduced-motion ativo → fades de 150 ms, sem pulso.
+- [ ] "Voltar" do Android com o `EditSheet` aberto fecha a folha sem salvar (não sai do app).
 - [ ] `npx tsc --noEmit` sem erros.
 - [ ] Comparação visual feita contra `screens/01` a `06`.
 

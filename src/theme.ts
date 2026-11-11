@@ -313,26 +313,42 @@ function parseTranslateY(css: string): number {
   return Number(m[1]) / 100;
 }
 
-const { easing: _easing, ...rawMotion } = tokens.motion;
+/** Valor máximo (overshoot) da curva no eixo do progresso — ex.: spring ≈ 1,098. */
+export function bezierPeak([x1, y1, x2, y2]: Bezier): number {
+  void x1;
+  void x2;
+  let peak = 1;
+  for (let i = 0; i <= 1000; i++) {
+    const s = i / 1000;
+    const y = 3 * (1 - s) ** 2 * s * y1 + 3 * (1 - s) * s * s * y2 + s ** 3;
+    if (y > peak) peak = y;
+  }
+  return peak;
+}
+
+const { easing: _easing, _fonte: _motionFonte, ...rawMotion } = tokens.motion;
 
 type RawMotion = (typeof rawMotion)[keyof typeof rawMotion];
 type MotionName = keyof typeof rawMotion;
 
+type EasingKey = 'easing' | `${string}Easing`;
+
 /**
- * Cada animação com `easing` resolvido para tupla de bezier e, quando houver,
- * `fromTranslateY` como fração da própria altura (130% → 1.3).
+ * Cada animação com as curvas (`easing`, `*Easing`) resolvidas para tupla de bezier e,
+ * quando houver, `fromTranslateY` como fração da própria altura (130% → 1.3).
  */
-export type MotionToken<T> = Omit<T, 'easing' | 'from'> & {
-  easing?: Bezier;
+export type MotionToken<T> = { [K in Exclude<keyof T, 'from'>]: K extends EasingKey ? Bezier : T[K] } & {
   fromTranslateY?: number;
 };
 
 function motionToken<T extends RawMotion>(raw: T): MotionToken<T> {
-  const { easing: e, from, ...rest } = raw as T & { easing?: string; from?: string };
-  const out = { ...rest } as MotionToken<T>;
-  if (e !== undefined) out.easing = resolveEasing(e);
-  if (from !== undefined) out.fromTranslateY = parseTranslateY(from);
-  return out;
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(raw)) {
+    if (k === 'from') out.fromTranslateY = parseTranslateY(v as string);
+    else if (k === 'easing' || k.endsWith('Easing')) out[k] = resolveEasing(v as string);
+    else out[k] = v;
+  }
+  return out as MotionToken<T>;
 }
 
 export const motion = Object.fromEntries(

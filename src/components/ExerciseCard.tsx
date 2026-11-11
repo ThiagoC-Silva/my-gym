@@ -3,11 +3,13 @@
  * Puramente visual: recebe o exercício já com as edições aplicadas e as séries
  * marcadas. "Concluído" é derivado (todas as séries marcadas), nunca armazenado.
  */
-import { StyleSheet, View } from 'react-native';
+import { Animated, StyleSheet, View } from 'react-native';
 import { Text } from './Text';
 
 import { formatClock, formatLoad, formatNumber } from '../format';
-import { color, component, gradient, radius, shadow, space, text } from '../theme';
+import { useReducedMotion } from '../hooks/useReducedMotion';
+import { reducedFade, timing, useRise } from '../motion';
+import { color, component, gradient, motion, radius, shadow, space, text } from '../theme';
 import type { Exercise } from '../types';
 import { ExerciseCheck } from './ExerciseCheck';
 import { ExerciseMedia } from './ExerciseMedia';
@@ -30,23 +32,35 @@ export interface ExerciseCardProps {
   onEdit: (field: StatField) => void;
 }
 
-/** Borda 2 pt em degradê + brilho, desenhada atrás do conteúdo (padding-box/border-box do CSS). */
-function DoneBorder() {
+/**
+ * Borda 2 pt em degradê + brilho, desenhada atrás do conteúdo (padding-box/border-box
+ * do CSS). Duas camadas para o fade: o brilho (fora do card) e a borda, que é um
+ * degradê coberto pelo miolo na cor do card — esta precisa de composição fora da
+ * tela, senão no Android o degradê aparece através do miolo semitransparente.
+ */
+function DoneBorder({ opacity }: { opacity: Animated.Value }) {
   const b = component.card.doneBorder;
   return (
-    <Surface radius={radius.card} fill={gradient.brand} shadow={shadow.glowCard} style={StyleSheet.absoluteFill}>
-      <View
-        style={{
-          position: 'absolute',
-          top: b,
-          left: b,
-          right: b,
-          bottom: b,
-          borderRadius: radius.card - b,
-          backgroundColor: color.surface.card,
-        }}
-      />
-    </Surface>
+    <>
+      <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { opacity }]}>
+        <Surface radius={radius.card} shadow={shadow.glowCard} style={StyleSheet.absoluteFill} />
+      </Animated.View>
+      <Animated.View pointerEvents="none" needsOffscreenAlphaCompositing style={[StyleSheet.absoluteFill, { opacity }]}>
+        <Surface radius={radius.card} fill={gradient.brand} style={StyleSheet.absoluteFill}>
+          <View
+            style={{
+              position: 'absolute',
+              top: b,
+              left: b,
+              right: b,
+              bottom: b,
+              borderRadius: radius.card - b,
+              backgroundColor: color.surface.card,
+            }}
+          />
+        </Surface>
+      </Animated.View>
+    </>
   );
 }
 
@@ -65,6 +79,9 @@ export function ExerciseCard({
   const counting = restRemainingMs !== undefined;
   const load = formatLoad(exercise.carga);
   const c = component.card;
+  const reduced = useReducedMotion();
+  // Borda + brilho entram em fade ao concluir (DESIGN.md §7); somem na hora ao desmarcar.
+  const border = useRise(done, (v) => (reduced ? reducedFade(v, 1) : timing(v, 1, motion.cardBorder)));
 
   return (
     <Surface
@@ -73,7 +90,7 @@ export function ExerciseCard({
       shadow={shadow.raised}
       style={{ padding: space.cardPad, gap: space.cardGap }}
     >
-      {done && <DoneBorder />}
+      {done && <DoneBorder opacity={border} />}
 
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: c.headerGap }}>
         <Text style={[text.cardNumber, { color: color.accent.red, paddingTop: c.numberTop }]}>

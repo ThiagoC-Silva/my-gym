@@ -32,5 +32,7 @@ export function useRestTimer(rest: RestState, onFinish: () => void): number {
     };
   }, [rest]);
 
-  return rest ? Math.max(0, rest.endsAt - now) : 0;
+  // No primeiro render de um descanso novo, `now` ainda é o do último tick (antigo),
+  // o que só superestima o restante: limitar à duração total corrige.
+  return rest ? Math.min(rest.totalMs, Math.max(0, rest.endsAt - now)) : 0;
 }

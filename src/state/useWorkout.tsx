@@ -224,7 +224,7 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
       const r = applyEdit(base, { ...current, ...edit }, editing.sessionId, progress, overrides);
       setProgress(r.progress);
       setOverrides(r.overrides);
-      setEditing(null);
+      // Não fecha: a folha anima a saída sobre o card já atualizado e chama closeEdit.
     },
     [editing, progress, overrides],
   );

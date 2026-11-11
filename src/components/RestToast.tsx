@@ -23,8 +23,6 @@ export function RestToast({ subtitle }: { subtitle: string }) {
         paddingHorizontal: c.padX,
         gap: c.gap,
       }}
-      accessibilityRole="alert"
-      accessibilityLiveRegion="polite"
     >
       <Surface
         radius={radius.pill}
