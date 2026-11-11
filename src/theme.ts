@@ -355,22 +355,3 @@ export const motion = Object.fromEntries(
   Object.entries(rawMotion).map(([k, v]) => [k, motionToken(v)]),
 ) as { [K in MotionName]: MotionToken<(typeof rawMotion)[K]> };
 
-// ---------------------------------------------------------------------------
-
-export const theme = {
-  color,
-  gradient,
-  shadow,
-  radius,
-  space,
-  size,
-  component,
-  text,
-  easing,
-  motion,
-  edit,
-  fontFiles,
-} as const;
-
-export type Theme = typeof theme;
-export default theme;

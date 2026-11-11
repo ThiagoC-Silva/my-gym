@@ -14,16 +14,16 @@ Alvo: 390 × 844 pt (iPhone 14/15), tema escuro fixo, pt-BR.
 
 ## Estado atual
 
-> 🟡 **Tela funcional, sem animações.** A ficha completa roda no Expo Go, com edição e
-> persistência local. Falta a etapa de movimento (`DESIGN.md §7`).
+> ✅ **Concluído.** A ficha completa roda no Expo Go, com animações, edição e persistência
+> local. Faltam só mídias de exercícios (abaixo).
 
 | Área | Situação |
 |---|---|
-| Design (tokens, componentes, 9 telas, HTML de referência) | ✅ completo |
+| Design (tokens, regras, componentes, estados 01–06) | ✅ completo |
 | Especificação funcional (`promp-app.md`) | ✅ validada em 10/11/2026 |
 | Scaffold Expo (SDK 58) + `src/theme.ts` | ✅ 11/11/2026 |
 | Componentes, tela, estado e persistência | ✅ 11/11/2026, conferidos no aparelho |
-| Animações e reduced-motion | ⬜ próxima etapa |
+| Animações e reduced-motion | ✅ 11/11/2026, gravadas e conferidas no aparelho |
 | Assets `.webp` dos exercícios | 🟡 8 de 31 (Pull completo, 1 do Upper), recodificados (1,9 MB) |
 
 ---
@@ -50,11 +50,11 @@ Expo SDK 58 (React Native 0.88) + TypeScript, rodando no Expo Go. Sem backend e 
 Node LTS instalado via nvm.
 
 `expo-image` (WebP animado) · `react-native-svg` · `expo-linear-gradient` · `@react-native-masked-view/masked-view` ·
-`expo-haptics` · `@expo/vector-icons` · `react-native-safe-area-context` ·
+`expo-haptics` · `react-native-safe-area-context` ·
 `@react-native-async-storage/async-storage` · `expo-font` + Poppins e JetBrains Mono
 
-Sem bibliotecas de UI prontas — todos os componentes são próprios, para manter a fidelidade
-ao design neumórfico.
+Sem bibliotecas de UI nem de ícones prontas — todos os componentes e ícones (SVG) são próprios,
+para manter a fidelidade ao design neumórfico. Animações com o `Animated` nativo do React Native.
 
 ---
 
@@ -66,9 +66,6 @@ npx expo start      # abra no Expo Go pelo QR code
 npx tsc --noEmit    # checagem de tipos
 ```
 
-Para ver as animações originais, abra no navegador:
-`design/reference/Ficha de Treino - Referência.dc.html`
-
 ---
 
 ## Estrutura do repositório
@@ -78,13 +75,11 @@ CLAUDE.md                 regras do projeto para o Claude Code
 promp-app.md              especificação funcional: comportamento, dados, ficha, aceite
 README.md                 este arquivo
 
-design/                   pacote de handoff (fonte da verdade visual)
-  tokens.json             cores, sombras, raios, espaços, tipografia, motion
+design/                   fonte da verdade visual
+  tokens.json             cores, sombras, raios, espaços, tipografia, motion (lido pelo app)
   DESIGN.md               conceito, layout, movimento, regras
   COMPONENTS.md           anatomia e estados de cada componente
-  screens/                01–06 estados da tela · 07–09 fundamentos, componentes, animações
-  blocks/                 recortes por componente e por animação
-  reference/              HTML executável com os valores originais
+  screens/                01–06 estados da tela (2 px/pt)
 
 assets/exercises/<sessao>/<slug>.webp    mídias dos exercícios (recodificadas)
 scripts/recode-media.py                  recodifica um .webp original para o card
@@ -93,20 +88,21 @@ index.ts                  ponto de entrada do Expo → src/App.tsx
 src/
   App.tsx                 fontes, safe area, WorkoutProvider e a tela
   theme.ts                importa design/tokens.json e converte para RN
+  motion.ts               helpers de animação (timing, pop, useRise)
   types.ts · format.ts    modelo de dados (promp-app §8) e formatação pt-BR
   data/                   ficha.ts (§9) · media.ts · usuario.ts
   state/                  useWorkout (contexto) · progress.ts e schedule.ts (regras puras)
   screens/WorkoutScreen.tsx
-  hooks/                  useRestTimer · useMinHitSlop
-  components/             Surface, Header, WorkoutTabs, ExerciseCard, ProgressRing, RestPanel, EditSheet, …
+  hooks/                  useRestTimer · useMinHitSlop · useReducedMotion
+  components/             Surface, SlideIn, Header, WorkoutTabs, ExerciseCard, ProgressRing, RestPanel, EditSheet, …
 ```
 
 ---
 
 ## Fontes da verdade
 
-Nesta ordem: `design/tokens.json` → `design/COMPONENTS.md` → `design/DESIGN.md` →
-`design/screens/*.png` → `design/reference/*.dc.html` → `promp-app.md`.
+Nesta ordem: `design/tokens.json` → `design/DESIGN.md` e `design/COMPONENTS.md` →
+`src/components/` (o que já existe) → `design/screens/01`–`06` → `promp-app.md`.
 
 Conflito **visual** → vence o design. Conflito de **comportamento ou de dados** → vence
 `promp-app.md`. Nenhum valor de cor, sombra, raio ou fonte é digitado à mão: tudo sai de
@@ -121,7 +117,7 @@ As regras completas de implementação estão em [`CLAUDE.md`](CLAUDE.md).
 1. ~~Scaffold do Expo + `src/theme.ts` gerado de `tokens.json`.~~ ✅
 2. ~~Componentes isolados, comparados com `design/screens/08-componentes.png`.~~ ✅
 3. ~~Montagem da tela e validação dos estados `01`–`06`.~~ ✅
-4. Movimento conforme `DESIGN.md §7`, incluindo reduced-motion.
+4. ~~Movimento conforme `DESIGN.md §7`, incluindo reduced-motion.~~ ✅
 5. ~~Persistência local e `EditSheet`.~~ ✅
 6. *(depois)* Histórico de cargas por semana, como nas colunas Sem. 1–4 da ficha.
 

@@ -44,7 +44,6 @@ Dependências previstas:
 | `expo-linear-gradient` | `gradient.brand` / `fill` / `bar`, borda do card concluído |
 | `@react-native-masked-view/masked-view` | Texto do timer em degradê (`gradient.text`) |
 | `expo-haptics` | Haptic ao marcar série e ao zerar o descanso |
-| `@expo/vector-icons` | Ícones (imagem placeholder, cronômetro, check, lápis, ×) |
 | `react-native-safe-area-context` | Notch e barra inferior |
 | `@react-native-async-storage/async-storage` | Persistência do progresso e das edições |
 | `expo-font` + `@expo-google-fonts/poppins` + `@expo-google-fonts/jetbrains-mono` | Poppins 400–800 e JetBrains Mono 500 |

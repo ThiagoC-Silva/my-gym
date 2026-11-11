@@ -1,6 +1,6 @@
 # Ficha de Treino — COMPONENTS.md
 
-Anatomia, estados e regras de cada componente. Tokens referem-se a `tokens.json` / `DESIGN.md`. Imagem de referência: `screens/08-componentes.png`.
+Anatomia, estados e regras de cada componente. Tokens referem-se a `tokens.json` / `DESIGN.md`. Implementação de referência: `src/components/`.
 
 ---
 

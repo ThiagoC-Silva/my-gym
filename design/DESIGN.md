@@ -1,7 +1,7 @@
 # Ficha de Treino — DESIGN.md
 
 Fonte da verdade visual do app. Valores exatos; não arredondar nem substituir por tokens genéricos de framework.
-Arquivos complementares: `COMPONENTS.md` (anatomia e estados), `tokens.json` (valores para código), `screens/` (PNGs), `reference/` (HTML executável com os valores originais).
+Arquivos complementares: `COMPONENTS.md` (anatomia e estados), `tokens.json` (valores para código), `screens/` (PNGs dos estados da tela).
 
 ## 1. Conceito
 
@@ -153,6 +153,3 @@ Respeitar `prefers-reduced-motion`: trocar todas por fade de 150 ms e remover pu
 | `04-aviso.png` | Aviso "Descanso finalizado" |
 | `05-concluido.png` | Treino 100% com banner |
 | `06-edicao.png` | Folha de edição com Carga em foco |
-| `07-fundamentos.png` | Cores, tipografia, elevação |
-| `08-componentes.png` | Componentes isolados e seus estados |
-| `09-animacoes.png` | Quadros-chave das animações |

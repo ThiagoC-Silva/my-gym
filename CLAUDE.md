@@ -6,14 +6,20 @@ tema escuro neumórfico com acentos em degradê. Sem backend, sem navegação, s
 ## Fontes da verdade (em ordem de prioridade)
 
 1. `design/tokens.json` — todos os valores numéricos e de cor. Importar/converter; **nunca digitar à mão**.
-2. `design/COMPONENTS.md` — anatomia, estados e regras de cada componente.
-3. `design/DESIGN.md` — conceito, layout, movimento e regras de comportamento.
-4. `design/screens/*.png` — aparência esperada de cada estado (comparar visualmente após implementar).
-5. `design/reference/Ficha de Treino - Referência.dc.html` — implementação de referência executável.
-   Abrir no navegador para ver as animações reais; ler os estilos inline em caso de dúvida.
-6. `promp-app.md` — **comportamento, modelo de dados e conteúdo da ficha**.
+   O app depende dele em runtime (`src/theme.ts` o importa).
+2. `design/DESIGN.md` e `design/COMPONENTS.md` — conceito, regras, anatomia e estados. Valem também
+   para telas novas.
+3. `src/components/` — referência visual de tudo que já existe: foram construídos e conferidos
+   contra o design no aparelho. Tela nova reaproveita esses componentes em vez de recriá-los.
+4. `design/screens/01`–`06` — a tela como deve ficar em cada estado (2 px/pt); usar para conferir
+   regressões visuais.
+5. `promp-app.md` — **comportamento, modelo de dados e conteúdo da ficha**.
 
-Conflito **visual** → vence o design (1–5). Conflito de **comportamento ou dados** → vence `promp-app.md`.
+Conflito **visual** → vence o design (1–4). Conflito de **comportamento ou dados** → vence `promp-app.md`.
+
+As pranchas `07`–`09`, os recortes `design/blocks/` e o HTML de referência serviram para construir
+o app e foram removidos em 11/11/2026 (o que valia virou token ou componente). Continuam no
+histórico do git se for preciso consultar.
 
 ## Decisões travadas (10/11/2026 — não reabrir sem perguntar)
 
@@ -47,8 +53,8 @@ Conflito **visual** → vence o design (1–5). Conflito de **comportamento ou d
   saída animada do scrim/×). Fora dela, o comportamento padrão (sair).
 - **Notificação de fim de descanso com o app fechado:** fora do escopo (`promp-app.md §13`);
   o aviso só aparece com o app aberto.
-- **Medidas de componente (11/11/2026):** valores que só existem em `COMPONENTS.md`/HTML de
-  referência são **transcritos para `tokens.json`** (seção `component`, e sombras/fontes novas
+- **Medidas de componente (11/11/2026):** valores que só existem em `COMPONENTS.md` (ou que
+  existiam só no antigo HTML de referência) são **transcritos para `tokens.json`** (seção `component`, e sombras/fontes novas
   em `shadow`/`font`), nunca digitados no código. Medidas tiradas de PNG levam a origem em
   `component._fonte`. Header, `EditSheet` e `SessionBanner` transcritos/medidos em 11/11/2026 (`component._fonteTela`).
 - **Mídia (11/11/2026):** `resizeMode: contain`, centralizada sobre as listras, que continuam
@@ -57,7 +63,7 @@ Conflito **visual** → vence o design (1–5). Conflito de **comportamento ou d
 
 ## Regras visuais invioláveis
 
-- Fidelidade pixel a pixel aos PNGs. Não "melhorar", simplificar nem trocar por componentes
+- Fidelidade pixel a pixel aos PNGs `01`–`06` e aos componentes já construídos. Não "melhorar", simplificar nem trocar por componentes
   padrão de bibliotecas de UI. Nenhuma lib de UI pronta.
 - Nenhuma cor, sombra, raio, espaçamento ou fonte fora de `tokens.json`. Se faltar, **perguntar**.
 - Cor só indica **estado** (ativo / concluído / em contagem). Superfícies são sempre neutras.
@@ -103,7 +109,7 @@ Estado: um único hook/contexto `useWorkout`. "Exercício concluído" é **deriv
    `theme.ts` **importa** o `tokens.json` e converte os valores na carga do módulo, sem gerar
    arquivo. Para mudar um valor, edite o JSON, nunca o `theme.ts`. Usar sempre `color.*`,
    `shadow.*`, `text.*`, `radius.*`, `space.*`, `size.*`, `motion.*` e `gradientProps(...)`.
-2. ~~Componentes isolados vs `08-componentes.png`~~ Feito e conferido no aparelho em 11/11/2026.
+2. ~~Componentes isolados vs a prancha `08-componentes.png`~~ Feito e conferido no aparelho em 11/11/2026.
 3. ~~Montar a tela e validar cada estado contra `design/screens/01` a `06`~~ Feito em
    11/11/2026: `src/screens/WorkoutScreen.tsx` + `src/state/useWorkout.tsx`. Posições do topo
    conferidas em pt contra `01-inicio.png` (desvio < 2 pt); estados 02–06 exercitados no
@@ -112,14 +118,15 @@ Estado: um único hook/contexto `useWorkout`. "Exercício concluído" é **deriv
 4. ~~Implementar movimento conforme `DESIGN.md §7`~~ Feito em 11/11/2026 com `Animated` nativo
    (`src/motion.ts`, `src/components/SlideIn.tsx`, `src/hooks/useReducedMotion.ts`), gravado no
    aparelho (`adb shell screenrecord`) e conferido quadro a quadro. Valores que faltavam no §7
-   foram transcritos dos keyframes da referência para `tokens.json > motion` (ver `_fonte`).
+   foram transcritos dos keyframes do HTML de referência para `tokens.json > motion` (ver `_fonte`).
    Regras: animação só no gatilho, nunca na montagem (abrir o app, trocar de aba); saídas =
    entrada invertida; fade de grupo com camadas sobrepostas precisa de
    `needsOffscreenAlphaCompositing` no Android (mas ele corta sombra externa); a troca de aba
    vai em `startTransition` para a pílula (driver JS) não travar enquanto os cards montam.
 
-Trabalhar por partes (tema → componentes → tela → estados → animações) e pedir uma comparação
-com o PNG correspondente ao final de cada etapa.
+Telas ou estados novos: trabalhar por partes (componentes → tela → estados → animações),
+reaproveitando `src/components/`, e pedir uma comparação com o design da tela nova ao final de
+cada etapa. O projeto está concluído até aqui; commits vão direto na `main`.
 
 ## Verificação no aparelho (Android, adb)
 
