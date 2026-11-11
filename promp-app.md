@@ -390,17 +390,25 @@ natural, e o formato de `Overrides` já deve ser pensado para comportar essa cha
    Existem **8, todos no caminho certo** (os 7 de Pull + `rosca-concentrada-banco.webp` no Upper).
    **Faltam 23**, distribuídos entre Push (6), Inferiores A (6), Inferiores B (6) e Upper (5).
    As 5 pastas de sessão já existem com os nomes corretos.
-2. **Reps como faixa** — a ficha oficial prescreve faixas ("4 × 8–10"); o modelo guarda só o
+2. **Mídia superdimensionada (bloqueante)** — os 8 arquivos somam 9 MB para um card de
+   322×136 pt, variando de 356×329 a 1080×1080 px e de 12 a 131 frames. A recodificação
+   tentada com Pillow foi revertida: perdeu 12 dos 60 frames de `remada-baixa.webp` e não
+   preserva a duração por frame. Refazer com `img2webp`/libwebp ou ffmpeg, validando
+   contagem de frames e duração do loop contra o original. Ver `CLAUDE.md`, topo.
+3. **Proporção da mídia (bloqueante)** — a caixa de 2,37:1 com `cover` corta ~58% da altura
+   de assets quadrados, escondendo a parte relevante do movimento em vários exercícios.
+   Decidir entre aumentar `size.media`, reenquadrar os assets ou usar `contain`.
+4. **Reps como faixa** — a ficha oficial prescreve faixas ("4 × 8–10"); o modelo guarda só o
    topo, para casar com o stepper do `EditSheet`. O topo é o número que importa para a
    progressão, mas o piso some da tela e ele é a meta mínima da série. Custo baixo de
    recuperar: um campo `repsMin?` só para exibição, com o card mostrando "8–10" e o stepper
    continuando a editar o topo. Decidir antes de implementar o `StatItem`.
-3. **Header** — os PNGs trazem "Lucas"/"LM", que é nome de mock. O usuário real é **Thiago**
+5. **Header** — os PNGs trazem "Lucas"/"LM", que é nome de mock. O usuário real é **Thiago**
    (iniciais **TH**). Sem tela de perfil, fica constante em `src/data/usuario.ts`.
-4. **`EditSheet` para reps `/perna`** — o stepper edita o número; o sufixo `/perna` é fixo
+6. **`EditSheet` para reps `/perna`** — o stepper edita o número; o sufixo `/perna` é fixo
    da ficha e não editável.
-5. **Aquecimento não modelado** — a ficha pede "5 minutos leves e 1 ou 2 séries leves do
+7. **Aquecimento não modelado** — a ficha pede "5 minutos leves e 1 ou 2 séries leves do
    primeiro exercício do dia". As esferas contam só as séries valendo, então o primeiro
    exercício terá séries de aquecimento invisíveis no app. Combinado assim por ora.
-6. **Ficha de 4 dias** — a ficha oficial cita uma alternativa de 4 dias para semanas de
+8. **Ficha de 4 dias** — a ficha oficial cita uma alternativa de 4 dias para semanas de
    recuperação. O app assume uma única ficha; suportar duas exigiria um seletor acima das abas.

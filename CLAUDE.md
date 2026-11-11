@@ -3,6 +3,34 @@
 App mobile de **ficha de treino**: uma única tela, Expo + React Native + TypeScript,
 tema escuro neumórfico com acentos em degradê. Sem backend, sem navegação, sem login.
 
+## ⚠️ Primeira tarefa da próxima sessão — mídia dos exercícios
+
+Dois problemas abertos nos `.webp`, levantados em 10/11/2026. Resolver **antes** de escrever
+código de tela, porque os dois mudam o `ExerciseMedia`.
+
+**1. Arquivos superdimensionados — e a primeira recodificação falhou, foi revertida.**
+Os 8 `.webp` somam 9 MB para exibir num card de 322×136 pt, e são inconsistentes entre si:
+de 356×329 a 1080×1080 px, de 12 a 131 frames. Uma tentativa de recodificar com **Pillow** foi
+desfeita por dois defeitos:
+  - perdeu **12 dos 60 frames** de `remada-baixa.webp`, sem erro nem aviso;
+  - não preserva a duração por frame — o Pillow não lê `duration` de WebP animado
+    (`im.info['duration']` vem vazio), então a velocidade de reprodução vira um palpite de 80 ms.
+Refazer com `img2webp` / `anim_dump` do libwebp (`sudo apt install -y webp`) ou com ffmpeg.
+**Validação obrigatória antes de commitar:** contagem de frames idêntica à do original **e**
+duração total do loop idêntica, arquivo por arquivo.
+Originais intactos em `../gym-fire-assets-originais/` (fora do repo, não versionado).
+
+**2. A proporção da mídia não bate com os assets.**
+`size.media` = 136 com largura útil 322 → caixa de **2,37:1** com recorte `cover`. Todas as
+mídias são aproximadamente **quadradas**, então só a faixa central (~42% da altura) aparece, e
+em vários exercícios ela corta justamente o que importa — no `face-pull-polia` aparecem pernas
+e quadril, não ombro e rosto. Não é defeito de compressão: acontece igual com os originais.
+Decisão de design pendente — aumentar a altura da mídia, reenquadrar cada asset no movimento,
+ou usar `contain` deixando as listras aparecerem nas laterais.
+
+Enquanto isso não se resolve, **não versionar novos `.webp`** nem decidir sobre Git LFS: o
+volume final depende da recodificação.
+
 ## Fontes da verdade (em ordem de prioridade)
 
 1. `design/tokens.json` — todos os valores numéricos e de cor. Importar/converter; **nunca digitar à mão**.
