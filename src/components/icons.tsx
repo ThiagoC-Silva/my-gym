@@ -62,3 +62,43 @@ export function ImageIcon({ size, color }: Omit<IconProps, 'strokeWidth'>) {
     </Svg>
   );
 }
+
+/**
+ * −, + e × da folha de edição. O traço é inset em meio traço, para que o contorno
+ * de tinta (com as pontas arredondadas) meça exatamente `size`, como medido no PNG.
+ */
+function strokeBox(size: number, strokeWidth: number) {
+  const a = strokeWidth / 2;
+  return { a, b: size - a, m: size / 2 };
+}
+
+export function MinusIcon({ size, color, strokeWidth }: IconProps) {
+  const { a, b, m } = strokeBox(size, strokeWidth);
+  // Caixa quadrada: numa caixa com a altura do traço, o Android arredonda o tamanho
+  // em px e as pontas redondas somem (medido: 6,8 pt em vez de 9).
+  return (
+    <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <Line x1={a} y1={m} x2={b} y2={m} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
+    </Svg>
+  );
+}
+
+export function PlusIcon({ size, color, strokeWidth }: IconProps) {
+  const { a, b, m } = strokeBox(size, strokeWidth);
+  return (
+    <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <Line x1={a} y1={m} x2={b} y2={m} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
+      <Line x1={m} y1={a} x2={m} y2={b} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
+    </Svg>
+  );
+}
+
+export function CloseIcon({ size, color, strokeWidth }: IconProps) {
+  const { a, b } = strokeBox(size, strokeWidth);
+  return (
+    <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <Line x1={a} y1={a} x2={b} y2={b} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
+      <Line x1={b} y1={a} x2={a} y2={b} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
+    </Svg>
+  );
+}

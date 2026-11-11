@@ -14,15 +14,16 @@ Alvo: 390 × 844 pt (iPhone 14/15), tema escuro fixo, pt-BR.
 
 ## Estado atual
 
-> 🟡 **Início da implementação.** O projeto Expo está criado e o tema já sai de `tokens.json`.
-> A tela ainda é uma prova de fumaça do tema; os componentes vêm a seguir.
+> 🟡 **Tela funcional, sem animações.** A ficha completa roda no Expo Go, com edição e
+> persistência local. Falta a etapa de movimento (`DESIGN.md §7`).
 
 | Área | Situação |
 |---|---|
 | Design (tokens, componentes, 9 telas, HTML de referência) | ✅ completo |
 | Especificação funcional (`promp-app.md`) | ✅ validada em 10/11/2026 |
 | Scaffold Expo (SDK 58) + `src/theme.ts` | ✅ 11/11/2026 |
-| Componentes e tela | ⬜ não iniciados |
+| Componentes, tela, estado e persistência | ✅ 11/11/2026, conferidos no aparelho |
+| Animações e reduced-motion | ⬜ próxima etapa |
 | Assets `.webp` dos exercícios | 🟡 8 de 31 (Pull completo, 1 do Upper), recodificados (1,9 MB) |
 
 ---
@@ -90,11 +91,14 @@ scripts/recode-media.py                  recodifica um .webp original para o car
 
 index.ts                  ponto de entrada do Expo → src/App.tsx
 src/
-  App.tsx                 por ora, prova de fumaça do tema
+  App.tsx                 fontes, safe area, WorkoutProvider e a tela
   theme.ts                importa design/tokens.json e converte para RN
-  data/ficha.ts           (a criar)
-  hooks/                  useWorkout · useRestTimer · useReducedMotion
-  components/             Header, WorkoutTabs, ExerciseCard, ProgressRing, RestPanel, …
+  types.ts · format.ts    modelo de dados (promp-app §8) e formatação pt-BR
+  data/                   ficha.ts (§9) · media.ts · usuario.ts
+  state/                  useWorkout (contexto) · progress.ts e schedule.ts (regras puras)
+  screens/WorkoutScreen.tsx
+  hooks/                  useRestTimer · useMinHitSlop
+  components/             Surface, Header, WorkoutTabs, ExerciseCard, ProgressRing, RestPanel, EditSheet, …
 ```
 
 ---
@@ -115,10 +119,10 @@ As regras completas de implementação estão em [`CLAUDE.md`](CLAUDE.md).
 ## Roadmap
 
 1. ~~Scaffold do Expo + `src/theme.ts` gerado de `tokens.json`.~~ ✅
-2. Componentes isolados, comparados com `design/screens/08-componentes.png`.
-3. Montagem da tela e validação dos estados `01`–`06`.
+2. ~~Componentes isolados, comparados com `design/screens/08-componentes.png`.~~ ✅
+3. ~~Montagem da tela e validação dos estados `01`–`06`.~~ ✅
 4. Movimento conforme `DESIGN.md §7`, incluindo reduced-motion.
-5. Persistência local e `EditSheet`.
+5. ~~Persistência local e `EditSheet`.~~ ✅
 6. *(depois)* Histórico de cargas por semana, como nas colunas Sem. 1–4 da ficha.
 
 ---

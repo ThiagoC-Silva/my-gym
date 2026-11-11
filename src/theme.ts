@@ -154,6 +154,15 @@ export const shadow = Object.fromEntries(
   Object.entries(tokens.shadow).map(([k, v]) => [k, parseShadow(v)]),
 ) as Record<ShadowName, ShadowLayer[]>;
 
+/** Uma camada de sombra como `text-shadow` do RN (sem spread nem inset). */
+export function textShadow(layer: ShadowLayer) {
+  return {
+    textShadowColor: layer.color,
+    textShadowOffset: { width: layer.offsetX, height: layer.offsetY },
+    textShadowRadius: layer.blurRadius,
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Medidas
 // ---------------------------------------------------------------------------
@@ -163,7 +172,7 @@ export const space = tokens.space;
 export const size = tokens.size;
 export const edit = tokens.edit;
 
-const { _fonte, ...componentTokens } = tokens.component;
+const { _fonte, _fonteTela, ...componentTokens } = tokens.component;
 /** Medidas específicas de cada componente (de COMPONENTS.md / referência), agrupadas por componente. */
 export const component = componentTokens;
 
@@ -204,6 +213,8 @@ export interface TextStyleToken {
   lineHeight?: number;
   letterSpacing?: number;
   textTransform?: 'uppercase';
+  /** Android: sem o padding extra de fonte, a caixa de linha fica igual à do CSS. */
+  includeFontPadding: false;
 }
 
 interface RawFont {
@@ -217,8 +228,10 @@ interface RawFont {
 
 function textStyle(raw: RawFont, weight = raw.weight): TextStyleToken {
   const family: Family = raw.family === 'mono' ? 'mono' : 'sans';
-  const st: TextStyleToken = { fontFamily: fontFamily(family, weight), fontSize: raw.size };
-  if (raw.lineHeight !== undefined) st.lineHeight = Math.round(raw.size * raw.lineHeight * 100) / 100;
+  const st: TextStyleToken = { fontFamily: fontFamily(family, weight), fontSize: raw.size, includeFontPadding: false };
+  // Sem lineHeight no token vale a altura "normal" do CSS para a fonte.
+  const lh = raw.lineHeight ?? tokens.font.lineHeightNormal[family];
+  st.lineHeight = Math.round(raw.size * lh * 100) / 100;
   if (raw.tracking !== undefined) {
     const em = /^(-?[\d.]+)em$/.exec(raw.tracking);
     if (!em) throw new Error(`theme: tracking deve estar em em: ${raw.tracking}`);
@@ -228,7 +241,7 @@ function textStyle(raw: RawFont, weight = raw.weight): TextStyleToken {
   return st;
 }
 
-const { family: _family, tab: rawTab, ...rawStyles } = tokens.font;
+const { family: _family, lineHeightNormal: _lhn, _lineHeightNormal: _lhnDoc, tab: rawTab, ...rawStyles } = tokens.font;
 
 type TextStyleName = keyof typeof rawStyles | 'tab' | 'tabActive';
 

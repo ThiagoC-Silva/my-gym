@@ -29,10 +29,13 @@ Conflito **visual** → vence o design (1–5). Conflito de **comportamento ou d
 - **Anel:** sempre `gradient.brand`. Não existe "cor de concluído" separada nos tokens; 100% apenas
   fecha o arco.
 - **Aba inicial:** pelo dia da semana (`promp-app.md §5`), mesmo que os PNGs mostrem terça com Push.
+- **Altura de linha:** estilos sem `lineHeight` usam a altura "normal" do CSS da fonte
+  (`font.lineHeightNormal`) e `includeFontPadding: false`; sem isso o Android desloca a tela ~10 pt.
+- **"Restaurar" (EditSheet):** volta os steppers ao padrão da ficha; só persiste com "Salvar".
 - **Medidas de componente (11/11/2026):** valores que só existem em `COMPONENTS.md`/HTML de
   referência são **transcritos para `tokens.json`** (seção `component`, e sombras/fontes novas
   em `shadow`/`font`), nunca digitados no código. Medidas tiradas de PNG levam a origem em
-  `component._fonte`. Header, `EditSheet` e `SessionBanner` ainda não foram transcritos.
+  `component._fonte`. Header, `EditSheet` e `SessionBanner` transcritos/medidos em 11/11/2026 (`component._fonteTela`).
 - **Mídia (11/11/2026):** `resizeMode: contain`, centralizada sobre as listras, que continuam
   no fundo e aparecem nas laterais. `size.media` continua 136. A margem branca de cada asset
   é cortada na recodificação, não em runtime.
@@ -85,17 +88,30 @@ Estado: um único hook/contexto `useWorkout`. "Exercício concluído" é **deriv
    `theme.ts` **importa** o `tokens.json` e converte os valores na carga do módulo, sem gerar
    arquivo. Para mudar um valor, edite o JSON, nunca o `theme.ts`. Usar sempre `color.*`,
    `shadow.*`, `text.*`, `radius.*`, `space.*`, `size.*`, `motion.*` e `gradientProps(...)`.
-   `src/App.tsx` é por ora uma prova de fumaça do tema, a ser substituída pela ficha.
-2. Implementar componentes isolados e comparar com `design/screens/08-componentes.png`.
-   Em andamento: os componentes da prancha 08 estão em `src/components/`, e
-   `src/dev/ComponentShowcase.tsx` (aberto pelo `App.tsx`) mostra todos os estados com dados
-   reais do Pull. Ainda falta a comparação no aparelho.
-3. Montar a tela e validar cada estado contra `design/screens/01` a `06`.
+2. ~~Componentes isolados vs `08-componentes.png`~~ Feito e conferido no aparelho em 11/11/2026.
+3. ~~Montar a tela e validar cada estado contra `design/screens/01` a `06`~~ Feito em
+   11/11/2026: `src/screens/WorkoutScreen.tsx` + `src/state/useWorkout.tsx`. Posições do topo
+   conferidas em pt contra `01-inicio.png` (desvio < 2 pt); estados 02–06 exercitados no
+   aparelho (descanso, +15s, Pular, últimos 5 s, aviso, edição, persistência, banner, Reiniciar,
+   alerta de desmarcar, troca de aba).
 4. Implementar movimento conforme `DESIGN.md §7` e comparar com
    `design/reference/Ficha de Treino - Referência.dc.html` aberto no navegador.
 
 Trabalhar por partes (tema → componentes → tela → estados → animações) e pedir uma comparação
 com o PNG correspondente ao final de cada etapa.
+
+## Verificação no aparelho (Android, adb)
+
+O celular do usuário (Motorola Edge 60 Pro, 1220×2712 px, densidade 450 → 2,8125 px/pt, tela de
+~434 pt) pode ser conectado por **depuração sem fio** (`adb pair` com o código que o usuário
+passa; a conexão é descoberta por mDNS). Com o `npx expo start` do usuário rodando:
+`adb shell am start -a android.intent.action.VIEW -d exp://<ip-do-pc>:8081` abre o projeto no
+Expo Go; `adb exec-out screencap -p` captura; `adb shell input tap/swipe` interage.
+- Medir em pt e comparar com os PNGs (2 px/pt, tela em x=50, y=84), não "no olho".
+- Não ler nem comentar notificações ou outros apps; capturar só o app.
+- Testes que mudam dados do app (edições, séries) devem ser **desfeitos** ao final.
+- `am force-stop host.exp.exponent` costuma devolver para a tela anterior; reabrir com o
+  `am start` e esperar o foco em `ExperienceActivity`.
 
 ## Comandos
 

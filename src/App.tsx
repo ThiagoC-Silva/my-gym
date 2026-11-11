@@ -1,7 +1,4 @@
-/**
- * Raiz do app. Por ora mostra a vitrine de componentes (etapa 2 do fluxo);
- * será trocada pela tela da ficha na etapa 3.
- */
+/** Raiz do app: fontes, safe area, estado e a tela única da ficha. */
 import {
   Poppins_400Regular,
   Poppins_500Medium,
@@ -15,7 +12,8 @@ import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { ComponentShowcase } from './dev/ComponentShowcase';
+import { WorkoutScreen } from './screens/WorkoutScreen';
+import { useWorkout, WorkoutProvider } from './state/useWorkout';
 import { color, fontFiles } from './theme';
 
 const fonts = {
@@ -27,13 +25,21 @@ const fonts = {
   [fontFiles.mono[500]]: JetBrainsMono_500Medium,
 };
 
-export default function App() {
-  const [loaded] = useFonts(fonts);
+function Root() {
+  const [fontsLoaded] = useFonts(fonts);
+  const { ready } = useWorkout();
+  return fontsLoaded && ready ? <WorkoutScreen /> : null;
+}
 
+export default function App() {
   return (
     <SafeAreaProvider>
       <StatusBar style="light" />
-      <View style={{ flex: 1, backgroundColor: color.surface.bg }}>{loaded && <ComponentShowcase />}</View>
+      <View style={{ flex: 1, backgroundColor: color.surface.bg }}>
+        <WorkoutProvider>
+          <Root />
+        </WorkoutProvider>
+      </View>
     </SafeAreaProvider>
   );
 }
