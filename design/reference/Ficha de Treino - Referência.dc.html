@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#e9e7e4;font-family:Poppins,system-ui,sans-serif;color:#1c1c1c}a{color:#E8282B}a:hover{color:#F7931E}
+@keyframes rfSphere{0%,20%{opacity:0;transform:scale(1)}30%{opacity:1;transform:scale(.7)}42%{transform:scale(1.15)}52%,80%{opacity:1;transform:scale(1)}92%,100%{opacity:0;transform:scale(1)}}
+@keyframes rfRipple{0%,29%{transform:scale(1);opacity:0}31%{opacity:.7}60%,100%{transform:scale(1.9);opacity:0}}
+@keyframes rfRing{0%,12%{stroke-dashoffset:226.19}40%,80%{stroke-dashoffset:113.1}95%,100%{stroke-dashoffset:226.19}}
+@keyframes rfBar{0%{width:100%}100%{width:0%}}
+@keyframes rfBorder{0%,28%{opacity:0}45%,80%{opacity:1}92%,100%{opacity:0}}
+@keyframes rfCheck{0%,22%{opacity:0;transform:scale(.6)}32%{opacity:1;transform:scale(1.15)}42%,80%{opacity:1;transform:scale(1)}92%,100%{opacity:0;transform:scale(1)}}
+@keyframes rfUp{0%,10%{transform:translateY(140%);opacity:0}28%,76%{transform:none;opacity:1}92%,100%{transform:translateY(140%);opacity:0}}
+@keyframes rfDown{0%,10%{transform:translateY(-160%);opacity:0}28%,76%{transform:none;opacity:1}92%,100%{transform:translateY(-160%);opacity:0}}
+@keyframes rfPulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes rfTab{0%,38%{transform:translateX(0)}50%,88%{transform:translateX(100px)}100%{transform:translateX(0)}}
+@keyframes rfTabA{0%,38%{color:#E8282B}50%,88%{color:#7e7e7e}100%{color:#E8282B}}
+@keyframes rfTabB{0%,38%{color:#7e7e7e}50%,88%{color:#E8282B}100%{color:#7e7e7e}}
+</style>
+</helmet>
+<div style="padding:64px 64px 96px;display:flex;flex-direction:column;gap:72px;width:max-content">
+
+  <header style="display:flex;flex-direction:column;gap:10px;max-width:760px">
+    <span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#E8282B">Ficha de Treino · Referência de design</span>
+    <h1 style="margin:0;font:800 44px/1.05 Poppins,sans-serif;letter-spacing:-.02em">Estados, componentes e animações</h1>
+    <p style="margin:0;font:400 15px/1.6 Poppins,sans-serif;color:#5c5c5c;text-wrap:pretty">Base de referência para a tela principal. As telas da seção 01 são a tela funcional real em cada estado; as seções seguintes documentam os fundamentos e cada elemento isolado.</p>
+  </header>
+
+  <section style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:baseline;gap:14px"><span style="font:600 12px 'JetBrains Mono',monospace;color:#E8282B">01</span><h2 style="margin:0;font:700 26px Poppins,sans-serif">Telas por estado</h2></div>
+    <div style="display:flex;gap:8px;align-items:flex-start">
+      <div style="display:flex;flex-direction:column;gap:4px;width:440px">
+        <div data-shot="01-inicio" style="width:440px;height:928px;overflow:hidden;background:#e9e7e4"><dc-import name="Ficha de Treino" preset="inicio" hint-size="440px,928px"></dc-import></div>
+        <span style="font:700 15px Poppins,sans-serif;padding-left:32px">Início do treino</span>
+        <span style="font:400 13px/1.5 Poppins,sans-serif;color:#5c5c5c;padding:0 32px">Nenhuma série feita. Anel em 0%, todas as esferas em relevo.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;width:440px">
+        <div data-shot="02-andamento" style="width:440px;height:928px;overflow:hidden;background:#e9e7e4"><dc-import name="Ficha de Treino" preset="andamento" hint-size="440px,928px"></dc-import></div>
+        <span style="font:700 15px Poppins,sans-serif;padding-left:32px">Em andamento</span>
+        <span style="font:400 13px/1.5 Poppins,sans-serif;color:#5c5c5c;padding:0 32px">1º exercício concluído com borda em degradê; 2º com 2 de 3 séries.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;width:440px">
+        <div data-shot="03-descanso" style="width:440px;height:928px;overflow:hidden;background:#e9e7e4"><dc-import name="Ficha de Treino" preset="descanso" hint-size="440px,928px"></dc-import></div>
+        <span style="font:700 15px Poppins,sans-serif;padding-left:32px">Descanso ativo</span>
+        <span style="font:400 13px/1.5 Poppins,sans-serif;color:#5c5c5c;padding:0 32px">Painel flutuante com contagem, +15s e Pular. O item Descanso do card mostra o tempo em vermelho.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;width:440px">
+        <div data-shot="04-aviso" style="width:440px;height:928px;overflow:hidden;background:#e9e7e4"><dc-import name="Ficha de Treino" preset="aviso" hint-size="440px,928px"></dc-import></div>
+        <span style="font:700 15px Poppins,sans-serif;padding-left:32px">Descanso finalizado</span>
+        <span style="font:400 13px/1.5 Poppins,sans-serif;color:#5c5c5c;padding:0 32px">Aviso desce do topo ao zerar o timer e some após 3,5 s.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;width:440px">
+        <div data-shot="05-concluido" style="width:440px;height:928px;overflow:hidden;background:#e9e7e4"><dc-import name="Ficha de Treino" preset="concluido" hint-size="440px,928px"></dc-import></div>
+        <span style="font:700 15px Poppins,sans-serif;padding-left:32px">Treino concluído</span>
+        <span style="font:400 13px/1.5 Poppins,sans-serif;color:#5c5c5c;padding:0 32px">Banner em degradê no topo da lista, anel em 100%, todos os cards destacados.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;width:440px">
+        <div data-shot="06-edicao" style="width:440px;height:928px;overflow:hidden;background:#e9e7e4"><dc-import name="Ficha de Treino" preset="edicao" hint-size="440px,928px"></dc-import></div>
+        <span style="font:700 15px Poppins,sans-serif;padding-left:32px">Edição de dados</span>
+        <span style="font:400 13px/1.5 Poppins,sans-serif;color:#5c5c5c;padding:0 32px">Tocar em qualquer dado (ícone de lápis) abre a folha com o campo tocado em foco. − / + ajustam; Salvar aplica; Restaurar volta ao padrão da ficha.</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:baseline;gap:14px"><span style="font:600 12px 'JetBrains Mono',monospace;color:#E8282B">02</span><h2 style="margin:0;font:700 26px Poppins,sans-serif">Fundamentos</h2></div>
+    <div style="display:flex;gap:24px;align-items:stretch">
+
+      <div style="width:560px;border-radius:28px;background:#2b2b2b;padding:32px;display:flex;flex-direction:column;gap:22px;color:#ececec">
+        <span style="font:700 18px Poppins,sans-serif">Cores</span>
+        <div style="height:96px;border-radius:20px;background:linear-gradient(135deg,#F7931E,#E8282B 55%,#9B2A6E);display:flex;align-items:flex-end;padding:14px 16px;box-sizing:border-box">
+          <span style="font:500 11px 'JetBrains Mono',monospace;color:#fff">gradient · 135° · F7931E → E8282B 55% → 9B2A6E</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px">
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="height:56px;border-radius:14px;background:#F7931E"></div><span style="font:600 12px Poppins,sans-serif">Laranja</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">#F7931E · destaque, números</span></div>
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="height:56px;border-radius:14px;background:#E8282B"></div><span style="font:600 12px Poppins,sans-serif">Vermelho</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">#E8282B · ativo, timer</span></div>
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="height:56px;border-radius:14px;background:#9B2A6E"></div><span style="font:600 12px Poppins,sans-serif">Magenta</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">#9B2A6E · fim do degradê</span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px">
+          <div style="display:flex;flex-direction:column;gap:6px"><div style="height:44px;border-radius:12px;background:#3A3A3A;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)"></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">#3A3A3A<br>moldura</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px"><div style="height:44px;border-radius:12px;background:#2B2B2B;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)"></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">#2B2B2B<br>fundo</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px"><div style="height:44px;border-radius:12px;background:#252525"></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">#252525<br>card</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px"><div style="height:44px;border-radius:12px;background:#222222"></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">#222222<br>afundado</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px"><div style="height:44px;border-radius:12px;background:#1B1B1B"></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">#1B1B1B<br>trilho</span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px">
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font:700 22px Poppins,sans-serif;color:#ECECEC">Aa</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">#ECECEC primário</span></div>
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font:700 22px Poppins,sans-serif;color:#BDBDBD">Aa</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">#BDBDBD secundário</span></div>
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font:700 22px Poppins,sans-serif;color:#7A7A7A">Aa</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">#7A7A7A apoio</span></div>
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font:700 22px Poppins,sans-serif;color:#5A5A5A">Aa</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">#5A5A5A inativo</span></div>
+        </div>
+      </div>
+
+      <div style="width:520px;border-radius:28px;background:#2b2b2b;padding:32px;display:flex;flex-direction:column;gap:18px;color:#ececec">
+        <span style="font:700 18px Poppins,sans-serif">Tipografia · Poppins</span>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;border-bottom:1px solid #353535;padding-bottom:14px"><span style="font:800 32px Poppins,sans-serif;color:#E8282B;letter-spacing:-.02em">10 NOV'26</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">Display · 800 · 32/26</span></div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;border-bottom:1px solid #353535;padding-bottom:14px"><span style="font:800 28px Poppins,sans-serif;background:linear-gradient(90deg,#F7931E,#E8282B);-webkit-background-clip:text;background-clip:text;color:transparent">01:12</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">Timer · 800 · 28 · degradê</span></div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;border-bottom:1px solid #353535;padding-bottom:14px"><span style="font:700 19px Poppins,sans-serif;color:#d6d6d6">Exercícios</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">Seção · 700 · 19</span></div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;border-bottom:1px solid #353535;padding-bottom:14px"><span style="font:700 17px Poppins,sans-serif">Supino reto com barra</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">Título card / valor · 700 · 17</span></div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;border-bottom:1px solid #353535;padding-bottom:14px"><span style="font:600 14px Poppins,sans-serif;color:#E8282B">Inferiores A</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">Aba · 600/700 · 14</span></div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;border-bottom:1px solid #353535;padding-bottom:14px"><span style="font:500 12px Poppins,sans-serif;color:#7a7a7a">Peitoral superior</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">Apoio · 500 · 12</span></div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;border-bottom:1px solid #353535;padding-bottom:14px"><span style="font:600 9px Poppins,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#727272">Descanso</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">Rótulo · 600 · 9 · caixa alta +8%</span></div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px"><span style="font:500 10px 'JetBrains Mono',monospace;color:#5f5f5f">supino-reto.webp</span><span style="font:500 10px 'JetBrains Mono',monospace;color:#8a8a8a">Arquivo · JetBrains Mono · 10</span></div>
+      </div>
+
+      <div style="width:420px;border-radius:28px;background:#2b2b2b;padding:32px;display:flex;flex-direction:column;gap:22px;color:#ececec">
+        <span style="font:700 18px Poppins,sans-serif">Elevação e raios</span>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px">
+          <div style="display:flex;flex-direction:column;gap:10px"><div style="height:84px;border-radius:28px;background:#252525;box-shadow:8px 8px 18px rgba(0,0,0,.45),-5px -5px 14px rgba(255,255,255,.03)"></div><span style="font:600 12px Poppins,sans-serif">Relevo</span><span style="font:500 10px/1.5 'JetBrains Mono',monospace;color:#8a8a8a">8 8 18 #000/45<br>-5 -5 14 #fff/3<br>cards · r 28</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px"><div style="height:84px;border-radius:14px;background:#222;box-shadow:inset 3px 3px 9px rgba(0,0,0,.55),inset -2px -2px 6px rgba(255,255,255,.03)"></div><span style="font:600 12px Poppins,sans-serif">Afundado</span><span style="font:500 10px/1.5 'JetBrains Mono',monospace;color:#8a8a8a">inset 3 3 9 #000/55<br>inset -2 -2 6 #fff/3<br>dados, mídia · r 14–20</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px"><div style="height:84px;border-radius:999px;background:#2b2b2b;box-shadow:10px 10px 24px rgba(0,0,0,.6),-4px -4px 12px rgba(255,255,255,.05)"></div><span style="font:600 12px Poppins,sans-serif">Flutuante</span><span style="font:500 10px/1.5 'JetBrains Mono',monospace;color:#8a8a8a">10 10 24 #000/60<br>anel, painel de descanso</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px"><div style="height:84px;border-radius:999px;background:linear-gradient(145deg,#F7931E,#E8282B);box-shadow:0 8px 20px rgba(232,40,43,.4)"></div><span style="font:600 12px Poppins,sans-serif">Brilho de destaque</span><span style="font:500 10px/1.5 'JetBrains Mono',monospace;color:#8a8a8a">0 5 14 #E8282B/38<br>elementos concluídos</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:baseline;gap:14px"><span style="font:600 12px 'JetBrains Mono',monospace;color:#E8282B">03</span><h2 style="margin:0;font:700 26px Poppins,sans-serif">Componentes e estados</h2></div>
+    <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;max-width:2240px">
+
+      <div style="border-radius:28px;background:#2b2b2b;padding:32px;display:flex;flex-direction:column;gap:20px;color:#ececec">
+        <span style="font:700 18px Poppins,sans-serif">Aba de treino</span>
+        <div style="display:flex;gap:22px;align-items:flex-start">
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><div style="padding:11px 18px;border-radius:999px;background:#2b2b2b;box-shadow:5px 5px 12px rgba(0,0,0,.4),-3px -3px 10px rgba(255,255,255,.035);font:600 14px Poppins,sans-serif;color:#7e7e7e">Pull</div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">inativa</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><div style="padding:11px 18px;border-radius:999px;background:#2b2b2b;box-shadow:5px 5px 12px rgba(0,0,0,.4),-3px -3px 10px rgba(255,255,255,.035);font:600 14px Poppins,sans-serif;color:#bdbdbd">Pull</div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">hover</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><div style="padding:11px 18px;border-radius:999px;background:#222;box-shadow:inset 3px 3px 8px rgba(0,0,0,.55),inset -2px -2px 6px rgba(255,255,255,.04);font:700 14px Poppins,sans-serif;color:#E8282B;display:flex;gap:8px;align-items:center">Push</div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">ativa</span></div>
+        </div>
+      </div>
+
+      <div style="border-radius:28px;background:#2b2b2b;padding:32px;display:flex;flex-direction:column;gap:20px;color:#ececec">
+        <span style="font:700 18px Poppins,sans-serif">Esfera de série · 38 px</span>
+        <div style="display:flex;gap:26px;align-items:flex-start">
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#303030,#262626);box-shadow:5px 5px 10px rgba(0,0,0,.45),-3px -3px 8px rgba(255,255,255,.04);font:700 14px Poppins,sans-serif;color:#6e6e6e;display:flex;align-items:center;justify-content:center">3</div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">pendente</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#303030,#262626);box-shadow:5px 5px 10px rgba(0,0,0,.45),-3px -3px 8px rgba(255,255,255,.04);font:700 14px Poppins,sans-serif;color:#F7931E;display:flex;align-items:center;justify-content:center">3</div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">hover</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><div style="width:38px;height:38px;border-radius:50%;background:#262626;box-shadow:inset 3px 3px 7px rgba(0,0,0,.6),inset -2px -2px 5px rgba(255,255,255,.04);font:700 14px Poppins,sans-serif;color:#F7931E;display:flex;align-items:center;justify-content:center;transform:scale(.94)">3</div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">pressionada</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#F7931E,#E8282B);box-shadow:0 5px 14px rgba(232,40,43,.38),inset 0 1px 0 rgba(255,255,255,.25);font:700 14px Poppins,sans-serif;color:#fff;display:flex;align-items:center;justify-content:center">3</div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">concluída</span></div>
+        </div>
+      </div>
+
+      <div style="border-radius:28px;background:#2b2b2b;padding:32px;display:flex;flex-direction:column;gap:20px;color:#ececec">
+        <span style="font:700 18px Poppins,sans-serif">Seleção do exercício · 32 px</span>
+        <div style="display:flex;gap:26px;align-items:flex-start">
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><div style="width:32px;height:32px;border-radius:50%;border:2px solid #444;background:#1f1f1f;box-shadow:inset 2px 2px 5px rgba(0,0,0,.6),inset -1px -1px 3px rgba(255,255,255,.04);box-sizing:border-box"></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">vazio</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><div style="width:32px;height:32px;border-radius:50%;border:2px solid #E8282B;background:#1f1f1f;box-shadow:inset 2px 2px 5px rgba(0,0,0,.6),inset -1px -1px 3px rgba(255,255,255,.04);box-sizing:border-box"></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">hover</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(145deg,#F7931E,#E8282B);box-shadow:0 4px 12px rgba(232,40,43,.4);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><polyline points="2.5,7.5 5.8,10.5 11.5,3.8" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></polyline></svg></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">concluído</span></div>
+        </div>
+      </div>
+
+      <div style="border-radius:28px;background:#2b2b2b;padding:32px;display:flex;flex-direction:column;gap:20px;color:#ececec">
+        <span style="font:700 18px Poppins,sans-serif">Item de dado</span>
+        <div style="display:flex;gap:16px;align-items:flex-start">
+          <div style="display:flex;flex-direction:column;gap:10px;width:80px"><div style="border-radius:14px;background:#222;box-shadow:inset 2px 2px 6px rgba(0,0,0,.5),inset -1px -1px 4px rgba(255,255,255,.03);padding:10px 8px 9px;display:flex;flex-direction:column;gap:3px;position:relative"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F7931E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;bottom:11px;right:9px"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg><span style="font:600 9px Poppins,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#727272">Carga</span><span style="font:700 17px/1.1 Poppins,sans-serif">80<span style="font:600 11px Poppins,sans-serif;color:#7a7a7a;margin-left:2px">kg</span></span></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">com unidade</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;width:80px"><div style="border-radius:14px;background:#222;box-shadow:inset 2px 2px 6px rgba(0,0,0,.5),inset -1px -1px 4px rgba(255,255,255,.03);padding:10px 8px 9px;display:flex;flex-direction:column;gap:3px;position:relative"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F7931E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;bottom:11px;right:9px"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg><span style="font:600 9px Poppins,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#727272">Carga</span><span style="font:700 17px/1.1 Poppins,sans-serif">PC</span></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">peso corporal</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;width:80px"><div style="border-radius:14px;background:#222;box-shadow:inset 2px 2px 6px rgba(0,0,0,.5),inset -1px -1px 4px rgba(255,255,255,.03);padding:10px 8px 9px;display:flex;flex-direction:column;gap:3px;position:relative"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F7931E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;bottom:11px;right:9px"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg><span style="font:600 9px Poppins,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#727272">Descanso</span><span style="font:700 17px/1.1 Poppins,sans-serif">90<span style="font:600 11px Poppins,sans-serif;color:#7a7a7a;margin-left:2px">s</span></span></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">descanso parado</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;width:80px"><div style="border-radius:14px;background:#222;box-shadow:inset 2px 2px 6px rgba(0,0,0,.5),inset -1px -1px 4px rgba(255,255,255,.03);padding:10px 8px 9px;display:flex;flex-direction:column;gap:3px;position:relative"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F7931E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;bottom:11px;right:9px"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg><span style="font:600 9px Poppins,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#727272">Descanso</span><span style="font:700 17px/1.1 Poppins,sans-serif;color:#E8282B">00:48</span></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">contando</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;width:80px"><div style="position:relative;border-radius:14px;background:#1e1e1e;box-shadow:inset 2px 2px 6px rgba(0,0,0,.5),inset -1px -1px 4px rgba(255,255,255,.03);padding:10px 8px 9px;display:flex;flex-direction:column;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F7931E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;bottom:11px;right:9px"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg><span style="font:600 9px Poppins,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#727272">Reps</span><span style="font:700 17px/1.1 Poppins,sans-serif">10</span></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">hover · editável</span></div>
+        </div>
+      </div>
+
+      <div style="border-radius:28px;background:#2b2b2b;padding:32px;display:flex;flex-direction:column;gap:20px;color:#ececec">
+        <span style="font:700 18px Poppins,sans-serif">Anel de progresso · 92 px</span>
+        <div style="display:flex;gap:24px;align-items:flex-start">
+          <div style="display:flex;flex-direction:column;gap:12px;align-items:center"><div style="position:relative;width:92px;height:92px;border-radius:50%;background:#262626;box-shadow:10px 10px 24px rgba(0,0,0,.6),-4px -4px 12px rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center"><svg width="92" height="92" viewBox="0 0 92 92" style="position:absolute;inset:0;transform:rotate(-90deg)"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7931E"></stop><stop offset=".55" stop-color="#E8282B"></stop><stop offset="1" stop-color="#9B2A6E"></stop></linearGradient></defs><circle cx="46" cy="46" r="36" fill="none" stroke="#1b1b1b" stroke-width="9"></circle></svg><div style="position:relative;display:flex;flex-direction:column;align-items:center;line-height:1"><span style="font:800 19px Poppins,sans-serif">0%</span><span style="font:600 9px Poppins,sans-serif;color:#7a7a7a;margin-top:3px">0/17 séries</span></div></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">vazio</span></div>
+          <div style="display:flex;flex-direction:column;gap:12px;align-items:center"><div style="position:relative;width:92px;height:92px;border-radius:50%;background:#262626;box-shadow:10px 10px 24px rgba(0,0,0,.6),-4px -4px 12px rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center"><svg width="92" height="92" viewBox="0 0 92 92" style="position:absolute;inset:0;transform:rotate(-90deg)"><circle cx="46" cy="46" r="36" fill="none" stroke="#1b1b1b" stroke-width="9"></circle><circle cx="46" cy="46" r="36" fill="none" stroke="url(#rg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="226.19" stroke-dashoffset="166"></circle></svg><div style="position:relative;display:flex;flex-direction:column;align-items:center;line-height:1"><span style="font:800 19px Poppins,sans-serif">35%</span><span style="font:600 9px Poppins,sans-serif;color:#7a7a7a;margin-top:3px">6/17 séries</span></div></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">em andamento</span></div>
+          <div style="display:flex;flex-direction:column;gap:12px;align-items:center"><div style="position:relative;width:92px;height:92px;border-radius:50%;background:#262626;box-shadow:10px 10px 24px rgba(0,0,0,.6),-4px -4px 12px rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center"><svg width="92" height="92" viewBox="0 0 92 92" style="position:absolute;inset:0;transform:rotate(-90deg)"><circle cx="46" cy="46" r="36" fill="none" stroke="#1b1b1b" stroke-width="9"></circle><circle cx="46" cy="46" r="36" fill="none" stroke="url(#rg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="226.19" stroke-dashoffset="68"></circle></svg><div style="position:relative;display:flex;flex-direction:column;align-items:center;line-height:1"><span style="font:800 19px Poppins,sans-serif">71%</span><span style="font:600 9px Poppins,sans-serif;color:#7a7a7a;margin-top:3px">12/17 séries</span></div></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">avançado</span></div>
+          <div style="display:flex;flex-direction:column;gap:12px;align-items:center"><div style="position:relative;width:92px;height:92px;border-radius:50%;background:#262626;box-shadow:10px 10px 24px rgba(0,0,0,.6),-4px -4px 12px rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center"><svg width="92" height="92" viewBox="0 0 92 92" style="position:absolute;inset:0;transform:rotate(-90deg)"><circle cx="46" cy="46" r="36" fill="none" stroke="url(#rg)" stroke-width="9" stroke-linecap="round"></circle></svg><div style="position:relative;display:flex;flex-direction:column;align-items:center;line-height:1"><span style="font:800 19px Poppins,sans-serif">100%</span><span style="font:600 9px Poppins,sans-serif;color:#7a7a7a;margin-top:3px">17/17 séries</span></div></div><span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">completo</span></div>
+        </div>
+      </div>
+
+      <div style="border-radius:28px;background:#2b2b2b;padding:32px;display:flex;flex-direction:column;gap:20px;color:#ececec">
+        <span style="font:700 18px Poppins,sans-serif">Painel de descanso</span>
+        <div style="display:flex;gap:20px;align-items:flex-start">
+          <div style="display:flex;flex-direction:column;gap:12px;width:254px">
+            <div style="position:relative;height:84px;border-radius:26px;background:#232323;box-shadow:10px 10px 24px rgba(0,0,0,.6),-4px -4px 12px rgba(255,255,255,.04);overflow:hidden;display:flex;align-items:center;padding:0 12px 0 16px;gap:8px">
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font:600 9px Poppins,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#7a7a7a">Descanso</span><span style="font:800 28px/1.1 Poppins,sans-serif;background:linear-gradient(90deg,#F7931E,#E8282B);-webkit-background-clip:text;background-clip:text;color:transparent">00:48</span><span style="font:500 10px Poppins,sans-serif;color:#7a7a7a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Supino inclinado · série 2</span></div>
+              <div style="display:flex;flex-direction:column;gap:6px"><span style="border-radius:10px;padding:5px 9px;background:#2b2b2b;box-shadow:3px 3px 7px rgba(0,0,0,.45),-2px -2px 5px rgba(255,255,255,.04);font:600 11px Poppins,sans-serif;color:#bdbdbd">+15s</span><span style="border-radius:10px;padding:5px 9px;background:#2b2b2b;box-shadow:3px 3px 7px rgba(0,0,0,.45),-2px -2px 5px rgba(255,255,255,.04);font:600 11px Poppins,sans-serif;color:#E8282B">Pular</span></div>
+              <div style="position:absolute;left:0;right:0;bottom:0;height:3px;background:#1a1a1a"><div style="height:100%;width:64%;background:linear-gradient(90deg,#F7931E,#E8282B,#9B2A6E)"></div></div>
+            </div>
+            <span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">contando · barra = tempo restante</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;width:254px">
+            <div style="position:relative;height:84px;border-radius:26px;background:#232323;box-shadow:10px 10px 24px rgba(0,0,0,.6),-4px -4px 12px rgba(255,255,255,.04);overflow:hidden;display:flex;align-items:center;padding:0 12px 0 16px;gap:8px">
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font:600 9px Poppins,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#7a7a7a">Descanso</span><span style="font:800 28px/1.1 Poppins,sans-serif;color:#E8282B;animation:rfPulse .8s ease-in-out infinite">00:04</span><span style="font:500 10px Poppins,sans-serif;color:#7a7a7a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Supino inclinado · série 2</span></div>
+              <div style="display:flex;flex-direction:column;gap:6px"><span style="border-radius:10px;padding:5px 9px;background:#2b2b2b;box-shadow:3px 3px 7px rgba(0,0,0,.45),-2px -2px 5px rgba(255,255,255,.04);font:600 11px Poppins,sans-serif;color:#bdbdbd">+15s</span><span style="border-radius:10px;padding:5px 9px;background:#2b2b2b;box-shadow:3px 3px 7px rgba(0,0,0,.45),-2px -2px 5px rgba(255,255,255,.04);font:600 11px Poppins,sans-serif;color:#E8282B">Pular</span></div>
+              <div style="position:absolute;left:0;right:0;bottom:0;height:3px;background:#1a1a1a"><div style="height:100%;width:6%;background:linear-gradient(90deg,#F7931E,#E8282B,#9B2A6E)"></div></div>
+            </div>
+            <span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">últimos 5 s · vermelho pulsando</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;width:320px">
+            <div style="border-radius:22px;background:#1f1f1f;box-shadow:0 14px 30px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.05);padding:12px 14px;display:flex;align-items:center;gap:12px">
+              <div style="flex:none;width:36px;height:36px;border-radius:50%;background:linear-gradient(145deg,#F7931E,#E8282B);display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="13" r="8"></circle><line x1="12" y1="13" x2="12" y2="9"></line><line x1="10" y1="2.5" x2="14" y2="2.5"></line></svg></div>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font:700 14px Poppins,sans-serif">Descanso finalizado</span><span style="font:500 11px Poppins,sans-serif;color:#9a9a9a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Supino inclinado · próxima série</span></div>
+            </div>
+            <span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">aviso no topo · 3,5 s</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-radius:28px;background:#2b2b2b;padding:32px;display:flex;flex-direction:column;gap:20px;color:#ececec">
+        <span style="font:700 18px Poppins,sans-serif">Card de exercício</span>
+        <div style="display:flex;gap:24px;align-items:flex-start">
+
+          <div style="display:flex;flex-direction:column;gap:14px;width:340px">
+            <div style="position:relative;border-radius:28px;background:#252525;box-shadow:8px 8px 18px rgba(0,0,0,.45),-5px -5px 14px rgba(255,255,255,.03);padding:18px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;align-items:flex-start;gap:12px"><span style="font:800 13px Poppins,sans-serif;color:#E8282B;padding-top:3px">03</span><div style="flex:1;display:flex;flex-direction:column;gap:1px"><span style="font:700 17px/1.25 Poppins,sans-serif">Desenvolvimento militar</span><span style="font:500 12px Poppins,sans-serif;color:#7a7a7a">Deltoides</span></div><div style="flex:none;width:32px;height:32px;border-radius:50%;border:2px solid #444;background:#1f1f1f;box-shadow:inset 2px 2px 5px rgba(0,0,0,.6);box-sizing:border-box"></div></div>
+              <div style="height:96px;border-radius:20px;background:repeating-linear-gradient(135deg,#202020 0 10px,#232323 10px 20px);box-shadow:inset 3px 3px 9px rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center"><span style="font:500 10px 'JetBrains Mono',monospace;color:#5f5f5f">desenvolvimento.webp</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;gap:10px"><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#303030,#262626);box-shadow:5px 5px 10px rgba(0,0,0,.45),-3px -3px 8px rgba(255,255,255,.04);font:700 14px Poppins,sans-serif;color:#6e6e6e;display:flex;align-items:center;justify-content:center">1</div><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#303030,#262626);box-shadow:5px 5px 10px rgba(0,0,0,.45),-3px -3px 8px rgba(255,255,255,.04);font:700 14px Poppins,sans-serif;color:#6e6e6e;display:flex;align-items:center;justify-content:center">2</div><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#303030,#262626);box-shadow:5px 5px 10px rgba(0,0,0,.45),-3px -3px 8px rgba(255,255,255,.04);font:700 14px Poppins,sans-serif;color:#6e6e6e;display:flex;align-items:center;justify-content:center">3</div></div><span style="font:600 12px Poppins,sans-serif;color:#7a7a7a">0/3</span></div>
+            </div>
+            <span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">pendente</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px;width:340px">
+            <div style="position:relative;border-radius:28px;background:#252525;box-shadow:8px 8px 18px rgba(0,0,0,.45),-5px -5px 14px rgba(255,255,255,.03);padding:18px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;align-items:flex-start;gap:12px"><span style="font:800 13px Poppins,sans-serif;color:#E8282B;padding-top:3px">02</span><div style="flex:1;display:flex;flex-direction:column;gap:1px"><span style="font:700 17px/1.25 Poppins,sans-serif">Supino inclinado com halteres</span><span style="font:500 12px Poppins,sans-serif;color:#7a7a7a">Peitoral superior</span></div><div style="flex:none;width:32px;height:32px;border-radius:50%;border:2px solid #444;background:#1f1f1f;box-shadow:inset 2px 2px 5px rgba(0,0,0,.6);box-sizing:border-box"></div></div>
+              <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px"><div style="border-radius:14px;background:#222;box-shadow:inset 2px 2px 6px rgba(0,0,0,.5);padding:10px 8px 9px;display:flex;flex-direction:column;gap:3px;position:relative"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F7931E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;bottom:11px;right:9px"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg><span style="font:600 9px Poppins,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#727272">Carga</span><span style="font:700 17px/1.1 Poppins,sans-serif">30<span style="font:600 11px Poppins,sans-serif;color:#7a7a7a;margin-left:2px">kg</span></span></div><div style="border-radius:14px;background:#222;box-shadow:inset 2px 2px 6px rgba(0,0,0,.5);padding:10px 8px 9px;display:flex;flex-direction:column;gap:3px;position:relative"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F7931E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;bottom:11px;right:9px"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg><span style="font:600 9px Poppins,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#727272">Descanso</span><span style="font:700 17px/1.1 Poppins,sans-serif;color:#E8282B">00:48</span></div></div>
+              <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;gap:10px"><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#F7931E,#E8282B);box-shadow:0 5px 14px rgba(232,40,43,.38);font:700 14px Poppins,sans-serif;color:#fff;display:flex;align-items:center;justify-content:center">1</div><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#F7931E,#E8282B);box-shadow:0 5px 14px rgba(232,40,43,.38);font:700 14px Poppins,sans-serif;color:#fff;display:flex;align-items:center;justify-content:center">2</div><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#303030,#262626);box-shadow:5px 5px 10px rgba(0,0,0,.45),-3px -3px 8px rgba(255,255,255,.04);font:700 14px Poppins,sans-serif;color:#6e6e6e;display:flex;align-items:center;justify-content:center">3</div></div><span style="font:600 12px Poppins,sans-serif;color:#7a7a7a">2/3</span></div>
+            </div>
+            <span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">em andamento · descanso ativo (recorte)</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px;width:340px">
+            <div style="position:relative;border-radius:28px;background:#252525;box-shadow:8px 8px 18px rgba(0,0,0,.45),-5px -5px 14px rgba(255,255,255,.03)">
+              <div style="position:absolute;inset:0;border-radius:28px;border:2px solid transparent;background:linear-gradient(#252525,#252525) padding-box,linear-gradient(135deg,#F7931E,#E8282B 55%,#9B2A6E) border-box;box-shadow:0 10px 30px rgba(232,40,43,.18)"></div>
+              <div style="position:relative;padding:18px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;align-items:flex-start;gap:12px"><span style="font:800 13px Poppins,sans-serif;color:#E8282B;padding-top:3px">01</span><div style="flex:1;display:flex;flex-direction:column;gap:1px"><span style="font:700 17px/1.25 Poppins,sans-serif">Supino reto com barra</span><span style="font:500 12px Poppins,sans-serif;color:#7a7a7a">Peitoral</span></div><div style="flex:none;width:32px;height:32px;border-radius:50%;background:linear-gradient(145deg,#F7931E,#E8282B);box-shadow:0 4px 12px rgba(232,40,43,.4);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><polyline points="2.5,7.5 5.8,10.5 11.5,3.8" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></polyline></svg></div></div>
+                <div style="height:96px;border-radius:20px;background:repeating-linear-gradient(135deg,#202020 0 10px,#232323 10px 20px);box-shadow:inset 3px 3px 9px rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center"><span style="font:500 10px 'JetBrains Mono',monospace;color:#5f5f5f">supino-reto.webp</span></div>
+                <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;gap:10px"><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#F7931E,#E8282B);box-shadow:0 5px 14px rgba(232,40,43,.38);font:700 14px Poppins,sans-serif;color:#fff;display:flex;align-items:center;justify-content:center">1</div><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#F7931E,#E8282B);box-shadow:0 5px 14px rgba(232,40,43,.38);font:700 14px Poppins,sans-serif;color:#fff;display:flex;align-items:center;justify-content:center">2</div><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#F7931E,#E8282B);box-shadow:0 5px 14px rgba(232,40,43,.38);font:700 14px Poppins,sans-serif;color:#fff;display:flex;align-items:center;justify-content:center">3</div><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#F7931E,#E8282B);box-shadow:0 5px 14px rgba(232,40,43,.38);font:700 14px Poppins,sans-serif;color:#fff;display:flex;align-items:center;justify-content:center">4</div></div><span style="font:600 12px Poppins,sans-serif;color:#7a7a7a">4/4</span></div>
+              </div>
+            </div>
+            <span style="font:500 10px 'JetBrains Mono',monospace;color:#7a7a7a">concluído · borda degradê 2 px + brilho</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:baseline;gap:14px"><span style="font:600 12px 'JetBrains Mono',monospace;color:#E8282B">04</span><h2 style="margin:0;font:700 26px Poppins,sans-serif">Animações</h2><span style="font:400 13px Poppins,sans-serif;color:#5c5c5c">Em loop para referência. No app cada uma roda uma vez, no gatilho indicado.</span></div>
+    <div style="display:grid;grid-template-columns:repeat(4,300px);gap:24px">
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="height:190px;border-radius:24px;background:#2b2b2b;display:flex;align-items:center;justify-content:center">
+          <div style="position:relative;width:56px;height:56px">
+            <div style="position:absolute;inset:0;border-radius:50%;background:linear-gradient(145deg,#303030,#262626);box-shadow:6px 6px 12px rgba(0,0,0,.45),-3px -3px 8px rgba(255,255,255,.04);font:700 20px Poppins,sans-serif;color:#6e6e6e;display:flex;align-items:center;justify-content:center">2</div>
+            <div style="position:absolute;inset:0;border-radius:50%;border:2px solid #E8282B;animation:rfRipple 2.6s ease-out infinite"></div>
+            <div style="position:absolute;inset:0;border-radius:50%;background:linear-gradient(145deg,#F7931E,#E8282B);box-shadow:0 6px 16px rgba(232,40,43,.4);font:700 20px Poppins,sans-serif;color:#fff;display:flex;align-items:center;justify-content:center;animation:rfSphere 2.6s infinite">2</div>
+          </div>
+        </div>
+        <span style="font:700 15px Poppins,sans-serif">Série concluída</span>
+        <span style="font:500 10px/1.7 'JetBrains Mono',monospace;color:#5c5c5c">gatilho: toque na esfera<br>pop: 400 ms · cubic-bezier(.34,1.56,.64,1)<br>onda: 600 ms · ease-out · escala 1→1,9</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="height:190px;border-radius:24px;background:#2b2b2b;display:flex;align-items:center;justify-content:center">
+          <div style="position:relative;width:220px;height:110px;border-radius:24px;background:#252525;box-shadow:8px 8px 18px rgba(0,0,0,.45),-5px -5px 14px rgba(255,255,255,.03)">
+            <div style="position:absolute;inset:0;border-radius:24px;border:2px solid transparent;background:linear-gradient(#252525,#252525) padding-box,linear-gradient(135deg,#F7931E,#E8282B 55%,#9B2A6E) border-box;box-shadow:0 10px 30px rgba(232,40,43,.2);animation:rfBorder 2.6s ease-out infinite"></div>
+            <div style="position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;border:2px solid #444;background:#1f1f1f;box-sizing:border-box"></div>
+            <div style="position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;background:linear-gradient(145deg,#F7931E,#E8282B);display:flex;align-items:center;justify-content:center;animation:rfCheck 2.6s infinite"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><polyline points="2.5,7.5 5.8,10.5 11.5,3.8" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></polyline></svg></div>
+            <div style="position:absolute;top:20px;left:18px;display:flex;flex-direction:column;gap:6px"><div style="width:110px;height:10px;border-radius:5px;background:#3a3a3a"></div><div style="width:64px;height:8px;border-radius:4px;background:#323232"></div></div>
+          </div>
+        </div>
+        <span style="font:700 15px Poppins,sans-serif">Exercício concluído</span>
+        <span style="font:500 10px/1.7 'JetBrains Mono',monospace;color:#5c5c5c">gatilho: seleção ou última série<br>check: 400 ms · spring<br>borda + brilho: 450 ms · fade ease-out</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="height:190px;border-radius:24px;background:#2b2b2b;display:flex;align-items:center;justify-content:center">
+          <div style="position:relative;width:92px;height:92px;border-radius:50%;background:#262626;box-shadow:10px 10px 24px rgba(0,0,0,.6),-4px -4px 12px rgba(255,255,255,.05)">
+            <svg width="92" height="92" viewBox="0 0 92 92" style="position:absolute;inset:0;transform:rotate(-90deg)"><circle cx="46" cy="46" r="36" fill="none" stroke="#1b1b1b" stroke-width="9"></circle><circle cx="46" cy="46" r="36" fill="none" stroke="url(#rg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="226.19" stroke-dashoffset="226.19" style="animation:rfRing 3s cubic-bezier(.2,.8,.2,1) infinite"></circle></svg>
+          </div>
+        </div>
+        <span style="font:700 15px Poppins,sans-serif">Progresso da sessão</span>
+        <span style="font:500 10px/1.7 'JetBrains Mono',monospace;color:#5c5c5c">gatilho: qualquer série marcada<br>500 ms · cubic-bezier(.2,.8,.2,1)<br>texto central troca sem animação</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="position:relative;height:190px;border-radius:24px;background:#2b2b2b;overflow:hidden">
+          <div style="position:absolute;left:18px;right:18px;bottom:22px;height:70px;border-radius:22px;background:#232323;box-shadow:10px 10px 24px rgba(0,0,0,.6),-4px -4px 12px rgba(255,255,255,.04);overflow:hidden;display:flex;align-items:center;padding:0 16px;animation:rfUp 4s cubic-bezier(.2,.8,.2,1) infinite">
+            <div style="display:flex;flex-direction:column"><span style="font:600 9px Poppins,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#7a7a7a">Descanso</span><span style="font:800 24px/1.1 Poppins,sans-serif;background:linear-gradient(90deg,#F7931E,#E8282B);-webkit-background-clip:text;background-clip:text;color:transparent">01:15</span></div>
+            <div style="position:absolute;left:0;right:0;bottom:0;height:3px;background:#1a1a1a"><div style="height:100%;background:linear-gradient(90deg,#F7931E,#E8282B,#9B2A6E);animation:rfBar 4s linear infinite"></div></div>
+          </div>
+        </div>
+        <span style="font:700 15px Poppins,sans-serif">Painel de descanso</span>
+        <span style="font:500 10px/1.7 'JetBrains Mono',monospace;color:#5c5c5c">gatilho: série concluída (auto)<br>entrada: 450 ms · sobe de baixo<br>barra: linear pela duração do descanso</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="height:190px;border-radius:24px;background:#2b2b2b;display:flex;align-items:center;justify-content:center">
+          <span style="font:800 44px Poppins,sans-serif;color:#E8282B;animation:rfPulse .8s ease-in-out infinite">00:04</span>
+        </div>
+        <span style="font:700 15px Poppins,sans-serif">Últimos 5 segundos</span>
+        <span style="font:500 10px/1.7 'JetBrains Mono',monospace;color:#5c5c5c">gatilho: restante ≤ 5 s<br>pulso de opacidade 1 → .35<br>800 ms · ease-in-out · infinito</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="position:relative;height:190px;border-radius:24px;background:#2b2b2b;overflow:hidden">
+          <div style="position:absolute;top:22px;left:18px;right:18px;border-radius:20px;background:#1f1f1f;box-shadow:0 14px 30px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.05);padding:11px 12px;display:flex;align-items:center;gap:10px;animation:rfDown 4s cubic-bezier(.2,.8,.2,1) infinite">
+            <div style="flex:none;width:30px;height:30px;border-radius:50%;background:linear-gradient(145deg,#F7931E,#E8282B)"></div>
+            <span style="font:700 13px Poppins,sans-serif;color:#ececec">Descanso finalizado</span>
+          </div>
+        </div>
+        <span style="font:700 15px Poppins,sans-serif">Aviso de fim de descanso</span>
+        <span style="font:500 10px/1.7 'JetBrains Mono',monospace;color:#5c5c5c">gatilho: timer chega a 00:00<br>entrada: 450 ms · desce do topo<br>permanência: 3,5 s · sugerido: vibração curta</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="height:190px;border-radius:24px;background:#2b2b2b;display:flex;align-items:center;justify-content:center">
+          <div style="position:relative;display:flex;gap:12px;width:188px">
+            <div style="position:absolute;left:0;top:0;width:88px;height:42px;border-radius:999px;background:#222;box-shadow:inset 3px 3px 8px rgba(0,0,0,.55),inset -2px -2px 6px rgba(255,255,255,.04);animation:rfTab 3s cubic-bezier(.2,.8,.2,1) infinite"></div>
+            <span style="position:relative;width:88px;height:42px;display:flex;align-items:center;justify-content:center;font:700 14px Poppins,sans-serif;animation:rfTabA 3s infinite">Push</span>
+            <span style="position:relative;width:88px;height:42px;display:flex;align-items:center;justify-content:center;font:700 14px Poppins,sans-serif;animation:rfTabB 3s infinite">Pull</span>
+          </div>
+        </div>
+        <span style="font:700 15px Poppins,sans-serif">Troca de treino <span style="font:500 10px 'JetBrains Mono',monospace;color:#E8282B">proposta</span></span>
+        <span style="font:500 10px/1.7 'JetBrains Mono',monospace;color:#5c5c5c">gatilho: toque na aba<br>pílula afundada desliza: 300 ms<br>lista de cards: fade 200 ms</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="position:relative;height:190px;border-radius:24px;background:#2b2b2b;overflow:hidden;display:flex;align-items:center;justify-content:center">
+          <div style="width:250px;border-radius:22px;padding:14px;background:linear-gradient(135deg,#F7931E,#E8282B 55%,#9B2A6E);display:flex;align-items:center;gap:12px;box-sizing:border-box;animation:rfUp 4s cubic-bezier(.2,.8,.2,1) infinite">
+            <div style="flex:none;width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 14 14" fill="none"><polyline points="2.5,7.5 5.8,10.5 11.5,3.8" stroke="#E8282B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></polyline></svg></div>
+            <span style="font:700 15px Poppins,sans-serif;color:#fff">Treino concluído</span>
+          </div>
+        </div>
+        <span style="font:700 15px Poppins,sans-serif">Treino concluído</span>
+        <span style="font:500 10px/1.7 'JetBrains Mono',monospace;color:#5c5c5c">gatilho: 100% das séries<br>banner: 500 ms · sobe com fade<br>check: pop spring com atraso de 150 ms</span>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+</body>
+</html>
