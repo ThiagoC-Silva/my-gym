@@ -31,6 +31,15 @@ Conflito **visual** → vence o design (1–5). Conflito de **comportamento ou d
 - **Aba inicial:** pelo dia da semana (`promp-app.md §5`), mesmo que os PNGs mostrem terça com Push.
 - **Altura de linha:** estilos sem `lineHeight` usam a altura "normal" do CSS da fonte
   (`font.lineHeightNormal`) e `includeFontPadding: false`; sem isso o Android desloca a tela ~10 pt.
+- **Responsivo (11/11/2026):** o design vale para 390 pt; em outras larguras:
+  - distâncias da base (anel, painel, folha, fim da lista) somam `insets.bottom − 34` quando a
+    barra do sistema passa da do iPhone do design (Android com 3 botões);
+  - rótulos e valores do dado e rótulos da folha usam `fitOneLine` (encolhem até
+    `font.minFitScale` = 0,75); o valor do dado reserva o espaço do lápis;
+  - fonte do sistema limitada a `font.maxScale` = 1,2 — usar sempre `src/components/Text`,
+    nunca o `Text` do react-native;
+  - testado no aparelho em 390, 360 e 320 pt (`adb shell wm density 500/542/610`) e com fonte
+    1,3×; restaurar com `wm density reset` e `settings put system font_scale 1.0`.
 - **"Restaurar" (EditSheet):** volta os steppers ao padrão da ficha; só persiste com "Salvar".
 - **Medidas de componente (11/11/2026):** valores que só existem em `COMPONENTS.md`/HTML de
   referência são **transcritos para `tokens.json`** (seção `component`, e sombras/fontes novas

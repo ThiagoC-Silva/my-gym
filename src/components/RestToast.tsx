@@ -2,7 +2,8 @@
  * Aviso de fim de descanso — COMPONENTS.md > RestToast.
  * Só o aviso; a posição (top 54, laterais 16) e a animação são da tela.
  */
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { Text } from './Text';
 
 import { color, component, gradient, radius, shadow, text } from '../theme';
 import { StopwatchIcon } from './icons';

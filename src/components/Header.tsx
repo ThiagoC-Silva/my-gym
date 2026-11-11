@@ -1,5 +1,6 @@
 /** Cabeçalho — COMPONENTS.md > Header. Avatar com anel em degradê, saudação e data. */
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Text } from './Text';
 
 import { usuario } from '../data/usuario';
 import { headerDate } from '../state/schedule';

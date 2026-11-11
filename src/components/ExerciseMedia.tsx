@@ -5,7 +5,8 @@
  */
 import { Image } from 'expo-image';
 import { useId } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Text } from './Text';
 import Svg, { Defs, Pattern, Rect } from 'react-native-svg';
 
 import { color, component, radius, shadow, size, text } from '../theme';

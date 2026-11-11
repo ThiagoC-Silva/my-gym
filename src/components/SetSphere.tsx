@@ -1,5 +1,6 @@
 /** Esfera de série — COMPONENTS.md > SetSphere. 38 pt, hit-area 44. */
-import { Pressable, Text } from 'react-native';
+import { Pressable } from 'react-native';
+import { Text } from './Text';
 
 import { color, gradient, motion, radius, shadow, size, text } from '../theme';
 import { Surface } from './Surface';

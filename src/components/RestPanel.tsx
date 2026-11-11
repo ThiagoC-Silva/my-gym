@@ -5,7 +5,8 @@
  */
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from './Text';
 
 import { formatClock } from '../format';
 import { color, component, gradient, gradientProps, motion, radius, shadow, size, text } from '../theme';

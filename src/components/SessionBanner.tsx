@@ -1,5 +1,6 @@
 /** Banner de treino concluído — COMPONENTS.md > SessionBanner e promp-app.md §7.5. */
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { Text } from './Text';
 
 import { useMinHitSlop } from '../hooks/useMinHitSlop';
 import { color, component, gradient, radius, shadow, space, text } from '../theme';

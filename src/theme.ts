@@ -241,7 +241,27 @@ function textStyle(raw: RawFont, weight = raw.weight): TextStyleToken {
   return st;
 }
 
-const { family: _family, lineHeightNormal: _lhn, _lineHeightNormal: _lhnDoc, tab: rawTab, ...rawStyles } = tokens.font;
+const {
+  family: _family,
+  lineHeightNormal: _lhn,
+  _lineHeightNormal: _lhnDoc,
+  maxScale: _maxScale,
+  _maxScale: _maxScaleDoc,
+  minFitScale: _minFitScale,
+  _minFitScale: _minFitScaleDoc,
+  tab: rawTab,
+  ...rawStyles
+} = tokens.font;
+
+/** Teto do tamanho de fonte do sistema (acessibilidade). */
+export const maxFontScale = tokens.font.maxScale;
+
+/** Props para um texto de uma linha que encolhe (até `font.minFitScale`) em vez de cortar. */
+export const fitOneLine = {
+  numberOfLines: 1,
+  adjustsFontSizeToFit: true,
+  minimumFontScale: tokens.font.minFitScale,
+} as const;
 
 type TextStyleName = keyof typeof rawStyles | 'tab' | 'tabActive';
 

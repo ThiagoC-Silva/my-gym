@@ -3,7 +3,8 @@
  * Puramente visual: recebe o exercício já com as edições aplicadas e as séries
  * marcadas. "Concluído" é derivado (todas as séries marcadas), nunca armazenado.
  */
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Text } from './Text';
 
 import { formatClock, formatLoad, formatNumber } from '../format';
 import { color, component, gradient, radius, shadow, space, text } from '../theme';

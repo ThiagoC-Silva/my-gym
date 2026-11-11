@@ -4,7 +4,8 @@
  * `gradient.brand` com vetor (0,0)→(1,1) na caixa do SVG já rotacionado.
  */
 import { useId } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { Text } from './Text';
 import Svg, { Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 
 import { color, component, gradient, shadow, size, text } from '../theme';

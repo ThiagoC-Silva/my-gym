@@ -1,5 +1,6 @@
 /** Linha de seção: "Exercícios" · divisor 3×22 · foco · concluídos/total (promp-app.md §4). */
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { Text } from './Text';
 
 import { color, component, text } from '../theme';
 

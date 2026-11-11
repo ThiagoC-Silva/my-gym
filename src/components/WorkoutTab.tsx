@@ -1,5 +1,6 @@
 /** Aba de treino — COMPONENTS.md > WorkoutTab. Não exibe porcentagem. */
-import { Pressable, Text } from 'react-native';
+import { Pressable } from 'react-native';
+import { Text } from './Text';
 
 import { color, component, radius, shadow, text } from '../theme';
 import { Surface } from './Surface';

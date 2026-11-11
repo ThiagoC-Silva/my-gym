@@ -4,12 +4,14 @@
  * (só persiste ao salvar). Toque no scrim fecha sem salvar.
  */
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Text } from './Text';
 
 import { formatLoad, formatNumber } from '../format';
 import { useMinHitSlop } from '../hooks/useMinHitSlop';
 import type { Edit } from '../state/progress';
-import { color, component, edit as steps, gradient, radius, shadow, size, text } from '../theme';
+import { color, component, edit as steps, fitOneLine, gradient, radius, shadow, size, text } from '../theme';
 import type { Exercise } from '../types';
 import type { StatField } from './ExerciseCard';
 import { CloseIcon, MinusIcon, PlusIcon } from './icons';
@@ -105,7 +107,9 @@ function StepperRow({
         }}
       >
         <View style={{ flex: 1 }}>
-          <Text style={[text.stepLabel, { color: focused ? color.accent.orange : color.text.secondary }]}>{label}</Text>
+          <Text style={[text.stepLabel, { color: focused ? color.accent.orange : color.text.secondary }]} {...fitOneLine}>
+            {label}
+          </Text>
           <Text style={[text.stepHint, { color: color.text.disabled }]}>{hint}</Text>
         </View>
         <StepButton kind="minus" label={`Diminuir ${label}`} onPress={() => onStep(-1)} />
@@ -148,6 +152,8 @@ export function EditSheet({ number, exercise, base, initialField, onClose, onSav
     descansoSeg: exercise.descansoSeg,
   });
   const [closeHit, onCloseLayout] = useMinHitSlop();
+  const insets = useSafeAreaInsets();
+  const extraBottom = Math.max(0, insets.bottom - component.screen.homeIndicator);
 
   const step = (key: StatField, dir: 1 | -1) => {
     setFocus(key);
@@ -173,7 +179,7 @@ export function EditSheet({ number, exercise, base, initialField, onClose, onSav
           borderTopRightRadius: radius.sheet,
           paddingTop: s.padTop,
           paddingHorizontal: s.padX,
-          paddingBottom: s.padBottom,
+          paddingBottom: s.padBottom + extraBottom,
           gap: s.gap,
         }}
         accessibilityViewIsModal

@@ -1,7 +1,8 @@
 /** Dado editável — COMPONENTS.md > StatItem. */
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { Text } from './Text';
 
-import { color, component, radius, shadow, text } from '../theme';
+import { color, component, fitOneLine, radius, shadow, text } from '../theme';
 import { PencilIcon } from './icons';
 import { Surface } from './Surface';
 
@@ -15,6 +16,10 @@ export interface StatItemProps {
 
 export function StatVisual({ label, value, unit, counting, pressed }: StatItemProps & { pressed?: boolean }) {
   const c = component.stat;
+  // O valor não invade o lápis (canto inferior direito): reserva a largura dele + folga.
+  const pencilRoom = c.pencil + c.pencilRight - c.padX + c.unitGap;
+  // Em telas estreitas o texto encolhe em vez de virar "DESCANS…".
+  const fit = fitOneLine;
   return (
     <Surface
       radius={radius.stat}
@@ -22,7 +27,7 @@ export function StatVisual({ label, value, unit, counting, pressed }: StatItemPr
       shadow={shadow.sunken}
       style={{ paddingTop: c.padTop, paddingHorizontal: c.padX, paddingBottom: c.padBottom, gap: c.gap }}
     >
-      <Text style={[text.label, { color: color.text.label }]} numberOfLines={1}>
+      <Text style={[text.label, { color: color.text.label }]} {...fit}>
         {label}
       </Text>
       {/*
@@ -30,7 +35,10 @@ export function StatVisual({ label, value, unit, counting, pressed }: StatItemPr
         a linha fica com a altura do valor, com ou sem unidade. Os 2 pt de margem
         viram um View inline, já que trecho de texto aninhado não aceita margem.
       */}
-      <Text style={[text.stat, { color: counting ? color.accent.red : color.text.primary }]} numberOfLines={1}>
+      <Text
+        style={[text.stat, { color: counting ? color.accent.red : color.text.primary, marginRight: pencilRoom }]}
+        {...fit}
+      >
         {value}
         {unit !== undefined && !counting && (
           <>

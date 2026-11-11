@@ -30,6 +30,9 @@ export function WorkoutScreen() {
 
   // O design mede tudo abaixo de uma status bar de 50 pt; no aparelho vale o inset real.
   const below = (designTop: number) => insets.top + designTop - component.screen.statusBar;
+  // As distâncias da base no design já incluem a área inferior do iPhone (34 pt). Se a
+  // barra do sistema for maior (ex.: Android com 3 botões), tudo sobe a diferença.
+  const extraBottom = Math.max(0, insets.bottom - component.screen.homeIndicator);
 
   const restEx = w.rest ? w.exercise(w.rest.sessionId, w.rest.exerciseId) : undefined;
   const editing = w.editing;
@@ -38,7 +41,7 @@ export function WorkoutScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: color.surface.bg }}>
       <ScrollView
-        contentContainerStyle={{ paddingTop: insets.top + component.header.top, paddingBottom: component.screen.listBottom }}
+        contentContainerStyle={{ paddingTop: insets.top + component.header.top, paddingBottom: component.screen.listBottom + extraBottom }}
       >
         <Header date={new Date()} />
         <View style={{ height: component.header.bottom }} />
@@ -76,7 +79,7 @@ export function WorkoutScreen() {
         </View>
       </ScrollView>
 
-      <View pointerEvents="box-none" style={{ position: 'absolute', right: space.listX, bottom: component.ring.bottom }}>
+      <View pointerEvents="box-none" style={{ position: 'absolute', right: space.listX, bottom: component.ring.bottom + extraBottom }}>
         <ProgressRing done={summary.setsDone} total={summary.sets} />
       </View>
 
@@ -87,7 +90,7 @@ export function WorkoutScreen() {
             position: 'absolute',
             left: space.listX,
             right: component.restPanel.right,
-            bottom: component.restPanel.bottom,
+            bottom: component.restPanel.bottom + extraBottom,
           }}
         >
           <RestPanel
