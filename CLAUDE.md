@@ -148,7 +148,17 @@ npx expo start          # Expo Go
 npx tsc --noEmit        # checagem de tipos — precisa passar limpo
 npx expo install <pkg>  # sempre usar este em vez de npm install: escolhe a versão do SDK
 npx expo-doctor         # diagnóstico de dependências e configuração
+scripts/build-apk.sh --install   # APK de release assinado + instala por adb
 ```
+
+**APK instalável (11/11/2026):** o app roda instalado, fora do Expo Go
+(`com.thiagoc.gymfire`). O toolchain fica fora do repo, sem `sudo`: Node em `~/.nvm`, JDK 17 e
+Android SDK em `~/.local/android-toolchain/`. A pasta `android/` é **gerada** pelo
+`expo prebuild` a cada build e é gitignored — nunca editar nada dentro dela à mão; mudança
+nativa vai em `app.json` ou no `scripts/build-apk.sh`, que reaplica a `signingConfig` de release
+em cima do template do Expo. A chave de assinatura mora em `../gym-fire-release/` (fora do
+repo): **não trocar nem perder** — chave diferente impede atualizar por cima e a reinstalação
+apaga os treinos salvos. Atualização = subir `expo.android.versionCode` no `app.json`.
 
 Stack: Expo SDK 58 · React Native 0.88 · React 19.3 · TypeScript 6. O Node (LTS 26) foi
 instalado via **nvm**. Em shell não interativo, carregar o nvm antes:

@@ -68,6 +68,46 @@ npx tsc --noEmit    # checagem de tipos
 
 ---
 
+## Instalar no celular (APK)
+
+Para usar no dia a dia sem depender do Expo Go nem do PC ligado:
+
+```bash
+scripts/build-apk.sh --install    # compila o APK de release e instala por adb
+scripts/build-apk.sh              # só compila, em dist/gym-fire.apk
+scripts/build-apk.sh --clean      # regenera android/ do zero antes de compilar
+```
+
+O script cuida de tudo: `expo prebuild`, assinatura de release e `gradlew assembleRelease`.
+A primeira compilação leva ~20 min (o Gradle baixa o distribuível, o AGP e o SDK alvo);
+as seguintes são bem mais rápidas.
+
+**Toolchain local** (fora do repo, instalado sem `sudo`, ~3 GB):
+
+| Peça | Onde |
+|---|---|
+| Node LTS 26 | `~/.nvm` (nvm) |
+| JDK 17 (Temurin) | `~/.local/android-toolchain/jdk-17.*` |
+| Android SDK | `~/.local/android-toolchain/android-sdk` |
+
+O script acha tudo sozinho; dá para apontar outro lugar com `GYMFIRE_TOOLCHAIN`.
+
+**Chave de assinatura** — em `../gym-fire-release/` (fora do repo, modo 600):
+`gym-fire.keystore` + `keystore.properties`. Faça backup dos dois. Se a chave se perder, o
+Android recusa a atualização por cima e só resta desinstalar e reinstalar — **o que apaga os
+treinos salvos no aparelho**. O `build-apk.sh` se recusa a compilar sem ela, justamente para
+não gerar um APK assinado com a chave de depuração.
+
+Para publicar uma atualização, suba o `versionCode` em `app.json` (`expo.android.versionCode`)
+e rode o script de novo; o `adb install -r` instala por cima preservando os dados.
+
+A pasta `android/` é gerada e fica fora do git: o script a recria a cada execução a partir do
+`app.json`, então não há nada nativo para versionar ou manter à mão.
+
+**Dados:** o app instalado tem armazenamento próprio — o que estiver salvo no Expo Go não migra.
+
+---
+
 ## Estrutura do repositório
 
 ```
