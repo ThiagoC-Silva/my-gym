@@ -169,7 +169,7 @@ O Expo muda APIs a cada SDK: conferir a documentação versionada
 ## Assets
 
 `assets/exercises/<pasta-da-sessao>/<slug>.webp`, com `<slug>` = `Exercise.id`.
-Hoje existem 8 de 31: os 7 de `pull/` e 1 de `upper/`. Todo exercício sem `.webp` renderiza o placeholder
+Hoje existem 14 de 31: os 7 de `pull/`, os 6 de `inferiores-b/` e 1 de `upper/`. Todo exercício sem `.webp` renderiza o placeholder
 com listras + ícone + nome do arquivo — isso é **estado de design previsto**, não bug.
 Nunca inventar nem gerar os `.webp` que faltam.
 

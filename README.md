@@ -24,7 +24,7 @@ Alvo: 390 × 844 pt (iPhone 14/15), tema escuro fixo, pt-BR.
 | Scaffold Expo (SDK 58) + `src/theme.ts` | ✅ 11/11/2026 |
 | Componentes, tela, estado e persistência | ✅ 11/11/2026, conferidos no aparelho |
 | Animações e reduced-motion | ✅ 11/11/2026, gravadas e conferidas no aparelho |
-| Assets `.webp` dos exercícios | 🟡 8 de 31 (Pull completo, 1 do Upper), recodificados (1,9 MB) |
+| Assets `.webp` dos exercícios | 🟡 14 de 31 (Pull e Inferiores B completos, 1 do Upper), recodificados (2,6 MB) |
 
 ---
 

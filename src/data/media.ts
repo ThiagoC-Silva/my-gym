@@ -12,6 +12,12 @@ const media: Record<string, number> = {
   'pull/face-pull-polia': require('../../assets/exercises/pull/face-pull-polia.webp'),
   'pull/rosca-direta-barra': require('../../assets/exercises/pull/rosca-direta-barra.webp'),
   'pull/rosca-martelo': require('../../assets/exercises/pull/rosca-martelo.webp'),
+  'inferiores-b/flexora-horizontal': require('../../assets/exercises/inferiores-b/flexora-horizontal.webp'),
+  'inferiores-b/flexora-sentada': require('../../assets/exercises/inferiores-b/flexora-sentada.webp'),
+  'inferiores-b/elevacao-pelvica': require('../../assets/exercises/inferiores-b/elevacao-pelvica.webp'),
+  'inferiores-b/agachamento-sumo': require('../../assets/exercises/inferiores-b/agachamento-sumo.webp'),
+  'inferiores-b/abducao': require('../../assets/exercises/inferiores-b/abducao.webp'),
+  'inferiores-b/panturrilha-sentada': require('../../assets/exercises/inferiores-b/panturrilha-sentada.webp'),
   'upper/rosca-concentrada-banco': require('../../assets/exercises/upper/rosca-concentrada-banco.webp'),
 };
 
